@@ -1,6 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 const mongoose = require('mongoose');
-const uri = process.env.MONGO_URI;
+const uri = require('./config').mongoURI;
 
 const client = new MongoClient(uri, {
   useUnifiedTopology: true
@@ -34,4 +34,3 @@ process.on('SIGTERM', () => {
 
 require('../models/user.model');
 require('../models/project.model');
-require('../models/task.model');

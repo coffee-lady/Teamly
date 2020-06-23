@@ -13,6 +13,10 @@ const TaskSchema = new mongoose.Schema({
       type: Date,
       required: true
     },
+    completed: {
+      type: Boolean,
+      default: false
+    }
   }, {
     versionKey: false
   });
@@ -41,4 +45,4 @@ const ProjectSchema = new mongoose.Schema({
   versionKey: false
 });
 
-module.exports = mongoose.model('Project', ProjectSchema);
+module.exports = mongoose.model('Project', ProjectSchema, 'projects');
