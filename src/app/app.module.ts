@@ -3,32 +3,39 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { AuthComponent } from './auth/auth.component';
-import { TaskComponent } from './task/task.component';
-import { ProjectInfoComponent } from './project-info/project-info.component';
-import { ProjectOverviewComponent } from './project-overview/project-overview.component';
-import { DevelopersComponent } from './developers/developers.component';
-import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
+import { MainComponent } from './main/main.component';
+import { NavbarComponent } from './shared/components/navbar/navbar.component';
+import { ProjectsSearchComponent } from './main/overview/projects-search/projects-search.component';
+import { DevelopersSearchComponent } from './main/overview/developers-search/developers-search.component';
+import { InfoComponent } from './main/info/info.component';
+import { DevsListComponent } from './main/overview/devs-list/devs-list.component';
+import { MyTasksComponent } from './main/overview/my-tasks/my-tasks.component';
+import { OverviewComponent } from './main/overview/overview.component';
+import { ProjectComponent } from './main/overview/project/project.component';
+
+import { AuthModule } from './auth/auth.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    NavbarComponent,
-    AuthComponent,
-    TaskComponent,
-    ProjectInfoComponent,
-    ProjectOverviewComponent,
-    DevelopersComponent,
-    LoginComponent,
-    RegisterComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        RegisterComponent,
+        MainComponent,
+        NavbarComponent,
+        ProjectsSearchComponent,
+        DevelopersSearchComponent,
+        InfoComponent,
+        DevsListComponent,
+        MyTasksComponent,
+        OverviewComponent,
+        ProjectComponent,
+    ],
+    imports: [
+        BrowserModule,
+        AuthModule,
+        AppRoutingModule
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
