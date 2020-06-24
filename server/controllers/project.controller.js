@@ -2,9 +2,17 @@ const User = require('../models/user.model');
 const Task = require('../models/task.model');
 const Project = require('../models/project.model');
 
+function handleError(err, res) {
+  res.status(err.status).json({
+    message: err.message
+  });
+  return console.error(err);
+}
+
 module.exports = function createProject(req, res) {
   let data = req.body;
-  Project.create({
+  Project
+    .create({
       title: data.title,
       description: data.description,
       managers: data.managers,
@@ -18,10 +26,10 @@ module.exports = function createProject(req, res) {
             $push: {
               projects: project._id
             }
-          }, err => console.error(err));
+          });
       }
     })
-    .catch(err => console.error(err));
+    .catch(err => handleError(err, res));
 };
 
 module.exports = function findProject(req, res) {
@@ -31,7 +39,8 @@ module.exports = function findProject(req, res) {
       title: new RegExp(title, 'i')
     })
     .exec((err, projects) => {
-      if (err) return console.error(err);
+      if (err) return handleError(err, res);
+
       res.status(201).json({
         projects: projects
       });
@@ -42,14 +51,16 @@ module.exports = function getProjectOverview(req, res) {
   Project
     .findById(req.params.projectId)
     .exec(async (err, project) => {
-      if (err) return console.error(err);
+      if (err) return handleError(err, res);
+
       let users = [],
         tasks = [];
       for (let userId of project.managers.concat(project.developers)) {
         await User
           .findById(userId)
           .exec((err, user) => {
-            if (err) console.error(err);
+            if (err) return handleError(err, res);
+
             users.push({
               fullname: user.fullname,
               role: user.role
@@ -60,7 +71,8 @@ module.exports = function getProjectOverview(req, res) {
         await Task
           .findById(taskId)
           .exec((err, task) => {
-            if (err) return console.error(err);
+            if (err) return handleError(err, res);
+
             tasks.push({
               title: task.title,
               description: task.description,
@@ -83,13 +95,15 @@ module.exports = function getProjectInfo(req, res) {
   Project
     .findById(req.params.projectId)
     .exec(async (err, project) => {
-      if (err) console.error(err);
+      if (err) return handleError(err, res);
+
       let users = [];
       for (let userId of project.managers.concat(project.developers)) {
         await User
           .findById(userId)
           .exec((err, user) => {
-            if (err) console.error(err);
+            if (err) return handleError(err, res);
+
             users.push({
               fullname: user.fullname,
               email: user.email,
@@ -113,12 +127,15 @@ module.exports = function updateProjectInfo(req, res) {
     description: data.description,
     managers: data.managers,
     developers: data.developers
-  }, err => console.error(err));
+  }, err => {
+    if (err) return handleError(err, res);
+  });
 };
 
 module.exports = function deleteProject(req, res) {
   Project.findByIdAndDelete(req.params.projectId, err => {
-    if (err) return console.error(err);
+    if (err) return handleError(err, res);
+
     res.status(200).end();
   });
 };

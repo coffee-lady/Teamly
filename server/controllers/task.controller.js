@@ -2,6 +2,13 @@ const User = require('../models/user.model');
 const Task = require('../models/task.model');
 const Project = require('../models/project.model');
 
+function handleError(err, res) {
+  res.status(err.status).json({
+    message: err.message
+  });
+  return console.error(err);
+}
+
 module.exports = async function createTask(req, res) {
   let data = req.body;
   let task = new Task({
@@ -14,8 +21,9 @@ module.exports = async function createTask(req, res) {
       tasks: task._id
     }
   }, err => {
-    if (err) return console.error(err);
+    if (err) handleError(err, res);
   });
+
   task.projectName = project.title;
   if (data.developer) {
     let dev = await User.findOneAndUpdate({
@@ -25,14 +33,15 @@ module.exports = async function createTask(req, res) {
         currentTasks: task._id
       }
     }, err => {
-      if (err) console.error(err);
+      if (err) handleError(err, res);
     });
+
     if (dev) {
       task.takenByDev = dev._id;
     }
-    Task.save(err => {
-      if (err) console.error(err);
-    });
+    Task
+      .save()
+      .catch(err => handleError(err, res));
 
     dev ? res.status(400).json({
       message: 'Incorrect developer email. The task was saved without assigned developer.'
@@ -44,7 +53,8 @@ module.exports = function getTaskInfo(req, res) {
   Task
     .findById(req.params.taskId)
     .exec((err, task) => {
-      if (err) return console.error(err);
+      if (err) handleError(err, res);
+
       res.status(200).json({
         title: task.title,
         description: task.description,
@@ -67,14 +77,16 @@ module.exports = function updateTaskInfo(req, res) {
       completed: data.completed,
       takenByDev: data.takenByDev
     }, err => {
-      if (err) return console.error(err);
+      if (err) handleError(err, res);
     });
+
   res.status(200).end();
 };
 
 module.exports = function deleteTask(req, res) {
   Task.findByIdAndDelete(req.params.taskId, err => {
-    if (err) return console.error(err);
+    if (err) handleError(err, res);
+
     res.status(200).end();
   });
 };
