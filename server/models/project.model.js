@@ -1,26 +1,5 @@
 const mongoose = require('mongoose');
 
-const TaskSchema = new mongoose.Schema({
-    title: {
-      type: String,
-      required: true
-    },
-    description: {
-      type: String,
-      required: true
-    },
-    dueDate: {
-      type: Date,
-      required: true
-    },
-    completed: {
-      type: Boolean,
-      default: false
-    }
-  }, {
-    versionKey: false
-  });
-
 const ProjectSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -34,13 +13,18 @@ const ProjectSchema = new mongoose.Schema({
     type: Date,
     default: new Date()
   },
+  //managers _ids
   managers: [{
     type: String,
   }],
+  //developers _ids
   developers: [{
     type: String,
   }],
-  tasks: [TaskSchema]
+  //tasks _ids
+  tasks: [{
+    type: String,
+  }]
 }, {
   versionKey: false
 });

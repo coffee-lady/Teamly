@@ -33,4 +33,5 @@ process.on('SIGTERM', () => {
 });
 
 require('../models/user.model');
+require('../models/task.model');
 require('../models/project.model');

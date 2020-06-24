@@ -18,10 +18,13 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
     type: String,
+    required: true
   },
+  //project _ids
   projects: [{
-   type: String,
+    type: String,
   }],
+  //tasks _ids
   currentTasks: [{
     type: String,
   }]
