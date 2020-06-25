@@ -1,1 +1,40 @@
-<p>navbar works!</p>
+<div class="nav">
+    <a routerLink="/" class="nav__link nav__link_logo">
+        <img src="../../../../assets/logo.png" class="logo__icon">
+        <span class="logo__title">teamly</span>
+    </a>
+
+    <div class="nav-container links">
+        <a routerLink='overview/developers' routerLinkActive="active" class="nav__link">DEVELOPERS</a>
+        <div class="dropdown">
+            <a routerLink='/' class="nav__link">NEW</a>
+            <div class="dropdown-content">
+                <a routerLink="/projects/new" class="nav__link nav__link_with-icon">
+                    <img src="../../../../assets/icons/rocket.png">
+                    <span>New project</span>
+                </a>
+                <a routerLink="/projects/tasks/new" class="nav__link nav__link_with-icon">
+                    <img src="../../../../assets/icons/mission.png">
+                    <span>New task</span>
+                </a>
+            </div>
+        </div>
+        <a routerLink='/overview/projects/:projectId' routerLinkActive="active" class="nav__link">PROJECTS</a>
+        <a routerLink='/overview/my-tasks' routerLinkActive="active" class="nav__link">TASKS</a>
+    </div>
+
+    <div class="nav-container">
+        <div class="dropdown">
+            <a class="nav__link nav__link_with-icon">
+                <img src="../../../../assets/icons/avatar.png">
+                <span> Anastasiya Leitch</span>
+            </a>
+            <div class="dropdown-content dropdown-content_logout">
+                <a routerLink="/" class="nav__link nav__link_with-icon">
+                    <img src="../../../../assets/icons/logout.png">
+                    <span>Log out</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

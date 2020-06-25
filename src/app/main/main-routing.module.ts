@@ -15,21 +15,25 @@ const routes: Routes = [{
     path: '',
     component: MainComponent,
     children: [{
-            path: '/overview',
+            path: '',
+            redirectTo: 'overview/developers'
+        }, {
+            path: 'overview',
             component: OverviewComponent,
             children: [
-                { path: '/developers', component: DevsListComponent, pathMatch: 'full' },
-                { path: '/my-tasks', component: MyTasksComponent, pathMatch: 'full' },
-                { path: '/projects/:projectId', component: ProjectComponent, pathMatch: 'full' }
+                { path: 'developers', component: DevsListComponent, pathMatch: 'full' },
+                { path: 'my-tasks', component: MyTasksComponent, pathMatch: 'full' },
+                { path: 'projects/:projectId', component: ProjectComponent, pathMatch: 'full' }
             ]
         },
         {
-            path: '/projects/:projectId/info',
+            path: 'projects',
             component: InfoComponent,
             children: [
-                { path: '', component: ProjectInfoComponent, pathMatch: 'full' },
-                { path: '/tasks/:taskId', component: TaskInfoComponent, pathMatch: 'full' },
-                { path: '/tasks/new', component: NewTaskComponent, pathMatch: 'full' }
+                { path: ':projectId/info', component: ProjectInfoComponent, pathMatch: 'full' },
+                { path: ':projectId/info/tasks/:taskId', component: TaskInfoComponent, pathMatch: 'full' },
+                { path: 'new', component: ProjectInfoComponent, pathMatch: 'full' },
+                { path: 'tasks/new', component: NewTaskComponent, pathMatch: 'full' }
             ]
         }
     ]

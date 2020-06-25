@@ -1,1 +1,31 @@
-<p>devs-list works!</p>
+<div class="container">
+    <div class="head">
+        <div class="title-box">
+            <div class="head__title">{{ project.title }}</div>
+            <button class="title-box__button" type="submit">
+                <img src="../../../../assets/icons/edit.png">
+            </button>
+        </div>
+        <div class="createdAt">Created: {{ project.createdAt }}</div>
+    </div>
+
+    <div class="description">{{ project.description }}</div>
+
+    <div class="users">
+        <div class="users__title">Managers:</div>
+        <ul class="users__list">
+            <li *ngFor="let manager of project.managers">
+                {{ manager }};
+            </li>
+        </ul>
+    </div>
+
+    <div class="users">
+        <div class="users__title">Developers:</div>
+        <ul class="users__list">
+            <li *ngFor="let dev of project.developers">
+                {{ dev }};
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,61 @@
+.head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 3em;
+}
+
+.title-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.head__title {
+    font-size: 50px;
+    font-family: 'Galdeano', sans-serif;
+}
+
+.title-box__button {
+    position: absolute;
+    right: -3em;
+    top: -0.5em;
+
+    img {
+        width: 25px;
+    }
+}
+
+.createdAt {
+    color: #36495E;
+}
+
+.description {
+    width: 80%;
+    padding: 0 3em 1em;
+    line-height: 29px;
+}
+
+.users {
+    padding: 0 3em;
+}
+
+.users__title {
+    font-size: 20px;
+}
+
+.users__list {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: repeat(4, 1fr);
+    color: #413C69;
+
+    li {
+        display: flex;
+        align-items: center;
+        height: 40px;
+        list-style: none;
+    }
+}

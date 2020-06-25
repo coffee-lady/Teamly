@@ -10,10 +10,10 @@ import { NewTaskComponent } from './info/new-task/new-task.component';
 
 
 @NgModule({
-  declarations: [UsersListComponent, AssignInputComponent, TaskInfoComponent, ProjectInfoComponent, NewTaskComponent],
-  imports: [
-    CommonModule,
-    MainRoutingModule
-  ]
+    declarations: [UsersListComponent, AssignInputComponent, TaskInfoComponent, ProjectInfoComponent, NewTaskComponent],
+    imports: [
+        CommonModule,
+        MainRoutingModule
+    ]
 })
-export class MainModule { }
+export class MainModule {}

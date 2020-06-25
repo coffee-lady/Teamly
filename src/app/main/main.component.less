@@ -1,0 +1,21 @@
+.container {
+    display: grid;
+    grid-template-areas:
+        "nav nav"
+        "devs-search devs-list";
+    grid-template-rows: 70px auto;
+    grid-template-columns: 400px 1fr;
+    height: 100vh;
+}
+
+app-navbar {
+    grid-area: nav;
+}
+
+app-developers-search {
+    grid-area: devs-search;
+}
+
+app-devs-list {
+    grid-area: devs-list;
+}
