@@ -6,20 +6,84 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./devs-list.component.less']
 })
 export class DevsListComponent implements OnInit {
-    project = {
-        title: 'Tetraedrum',
-        description: `Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-        Aenean commodo ligula eget dolor. Aenean massa.
-        Cum sociis natoque penatibus et magnis dis parturient montes, nascetur
-        ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis,
-        em. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
-        aliquet nec, vulputate eget, arcu.
-        In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.`,
-        createdAt: '21/06/20',
-        managers: ['Anastasiya Leitch', 'Heyva Fridman', 'Alex Solomintsev', 'Mary Kramer'],
-        developers: ['Tatyana Velikaya', 'Sima Leitch', 'Max Tomsky', 'Anastasiya Serebryanskaya', 'Venkeng Solony', 'Alex Solomintsev', 'Max Tomsky', 'Alex Solomintsev'],
+    user = {
+        fullname: 'Anastasiya Leitch',
+        email: 'anastasiya.leitch@gmail.com',
+        role: 'manager'
     };
-
+    devs = [{
+        fullname: 'Anastasiya Leitch',
+        email: 'a.leitch@gmail.com',
+        projects: ['stask, Lingwell, Delity'].join(',')
+    }, {
+        fullname: 'Mary Kramer',
+        email: 'a.leitch@gmail.com',
+        projects: ['stask, Lingwell, Delity'].join(',')
+    }, {
+        fullname: 'Heyva Fridman',
+        email: 'heyva.fridman@mail.ru',
+        projects: ['stask, CLUBIIP, Delity'].join(',')
+    }, {
+        fullname: 'Siaofang Levitt',
+        email: 'si.levitt@gmail.com',
+        projects: ['Tetr, Lingwell, Delity'].join(',')
+    }, {
+        fullname: 'Chongan Fridman',
+        email: 'y.fridman@gmail.com',
+        projects: ['ula, Lingwell, Delity'].join(',')
+    }, {
+        fullname: 'Alex Joi',
+        email: 'joi@mail.ru',
+        projects: ['stask, Lingwell, IKo'].join(',')
+    }, {
+        fullname: 'Anastasiya Leitch',
+        email: 'a.leitch@gmail.com',
+        projects: ['stask, Lingwell, Delity'].join(',')
+    }, {
+        fullname: 'Mary Kramer',
+        email: 'a.leitch@gmail.com',
+        projects: ['stask, Lingwell, Delity'].join(',')
+    }, {
+        fullname: 'Heyva Fridman',
+        email: 'heyva.fridman@mail.ru',
+        projects: ['stask, CLUBIIP, Delity'].join(',')
+    }, {
+        fullname: 'Siaofang Levitt',
+        email: 'si.levitt@gmail.com',
+        projects: ['Tetr, Lingwell, Delity'].join(',')
+    }, {
+        fullname: 'Chongan Fridman',
+        email: 'y.fridman@gmail.com',
+        projects: ['ula, Lingwell, Delity'].join(',')
+    }, {
+        fullname: 'Alex Joi',
+        email: 'joi@mail.ru',
+        projects: ['stask, Lingwell, IKo'].join(',')
+    }, {
+        fullname: 'Anastasiya Leitch',
+        email: 'a.leitch@gmail.com',
+        projects: ['stask, Lingwell, Delity'].join(',')
+    }, {
+        fullname: 'Mary Kramer',
+        email: 'a.leitch@gmail.com',
+        projects: ['stask, Lingwell, Delity'].join(',')
+    }, {
+        fullname: 'Heyva Fridman',
+        email: 'heyva.fridman@mail.ru',
+        projects: ['stask, CLUBIIP, Delity'].join(',')
+    }, {
+        fullname: 'Siaofang Levitt',
+        email: 'si.levitt@gmail.com',
+        projects: ['Tetr, Lingwell, Delity'].join(',')
+    }, {
+        fullname: 'Chongan Fridman',
+        email: 'y.fridman@gmail.com',
+        projects: ['ula, Lingwell, Delity'].join(',')
+    }, {
+        fullname: 'Alex Joi',
+        email: 'joi@mail.ru',
+        projects: ['stask, Lingwell, IKo'].join(',')
+    }];
     constructor() {}
 
     ngOnInit(): void {}

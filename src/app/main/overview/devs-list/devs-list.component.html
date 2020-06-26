@@ -1,31 +1,26 @@
 <div class="container">
-    <div class="head">
-        <div class="title-box">
-            <div class="head__title">{{ project.title }}</div>
-            <button class="title-box__button" type="submit">
-                <img src="../../../../assets/icons/edit.png">
-            </button>
-        </div>
-        <div class="createdAt">Created: {{ project.createdAt }}</div>
-    </div>
-
-    <div class="description">{{ project.description }}</div>
-
-    <div class="users">
-        <div class="users__title">Managers:</div>
-        <ul class="users__list">
-            <li *ngFor="let manager of project.managers">
-                {{ manager }};
-            </li>
-        </ul>
-    </div>
-
-    <div class="users">
-        <div class="users__title">Developers:</div>
-        <ul class="users__list">
-            <li *ngFor="let dev of project.developers">
-                {{ dev }};
-            </li>
-        </ul>
-    </div>
+<table class="table table-borderless">
+    <thead>
+        <tr>
+            <th scope="col">Task</th>
+            <th scope="col">Description</th>
+            <th scope="col">Due Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let dev of devs">
+            <td class="dev__fullname">{{ dev.fullname }}</td>
+            <td class="dev__email">{{ dev.email }}</td>
+            <td class="dev__projects">{{ dev.projects }}</td>
+            <td *ngIf="user.role==='manager'">
+                <div class="manager-buttons">
+                    <button type="sumbit"><img src="../../../../assets/icons/checklist.png"></button>
+                    <button type="sumbit"><img src="../../../../assets/icons/add_black.png"></button>
+                    <button type="sumbit"><img src="../../../../assets/icons/edit_little.png"></button>
+                    <button type="sumbit"><img src="../../../../assets/icons/delete_black.png"></button>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
 </div>

@@ -1,1 +1,38 @@
-<p>my-tasks works!</p>
+<div class="app-container">
+    <table class="table table-borderless">
+        <thead>
+            <tr>
+                <th scope="col">Project</th>
+                <th scope="col">Task</th>
+                <th scope="col">Description</th>
+                <th scope="col">Due Date</th>
+                <th scope="col">
+                    <div class="th-button">
+                        <button class="add-task-button" type="submit">
+                            <img src="../../../../assets/icons/add_black.png">
+                        </button>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let task of tasks">
+                <td class="task__title">{{ task.projectName }}</td>
+                <td class="task__title">{{ task.title }}</td>
+                <td class="task__description">{{ task.description }}</td>
+                <td>
+                    <div class="task__dueDate">
+                        <img src="../../../../assets/icons/clock.png">
+                        <span>{{ task.dueDate }}</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="task__buttons task__buttons_manager">
+                        <button type="submit"><img src="../../../../assets/icons/checklist.png"></button>
+                        <button type="submit"><img src="../../../../assets/icons/close.png"></button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

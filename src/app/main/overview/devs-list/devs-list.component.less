@@ -1,61 +1,22 @@
-.head {
+@import '../../../shared/styles/table.less';
+
+.container {
+    height: calc(100vh - 70px);
+    overflow: auto;
+}
+
+.manager-buttons {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: space-around;
     width: 100%;
-    box-sizing: border-box;
-    padding: 3em;
-}
+    max-width: 200px;
+    height: 100%;
 
-.title-box {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
+    button {
+        transition: all 0.2s ease-in-out;
 
-.head__title {
-    font-size: 50px;
-    font-family: 'Galdeano', sans-serif;
-}
-
-.title-box__button {
-    position: absolute;
-    right: -3em;
-    top: -0.5em;
-
-    img {
-        width: 25px;
-    }
-}
-
-.createdAt {
-    color: #36495E;
-}
-
-.description {
-    width: 80%;
-    padding: 0 3em 1em;
-    line-height: 29px;
-}
-
-.users {
-    padding: 0 3em;
-}
-
-.users__title {
-    font-size: 20px;
-}
-
-.users__list {
-    display: grid;
-    grid-template-rows: auto;
-    grid-template-columns: repeat(4, 1fr);
-    color: #413C69;
-
-    li {
-        display: flex;
-        align-items: center;
-        height: 40px;
-        list-style: none;
+        &:hover {
+            opacity: 0.7;
+        }
     }
 }

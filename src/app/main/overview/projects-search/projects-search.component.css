@@ -46,12 +46,14 @@
 .result:hover {
   background: #3282B8;
 }
-@media only screen and (max-width: 1440px) {
-  .result {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-.result__fullname {
+.result__title {
   font-size: 20px;
+}
+.result__createdAt {
+  display: flex;
+  align-items: center;
+}
+.result__createdAt span {
+  text-align: right;
+  margin-left: 0.8em;
 }

@@ -1,14 +1,11 @@
 <div class="container">
     <form class="search" action="">
-        <input class="search__input" type="text" name="projectsSearch" placeholder="Search projects...">
+        <input class="search__input" type="text" name="projectsSearch" placeholder="Search developers...">
     </form>
     <div class="results">
-        <a routerLink="" class="result" *ngFor="let result of results">
-            <span class="result__title">{{ result.title }}</span>
-            <div class="result__createdAt">
-                <img class="createdAt__icon" src="../../../../assets/icons/calendar.png">
-                <span class="createdAt__date">{{ result.createdAt }}</span>
-            </div>
-        </a>
+        <div routerLink="" class="result" *ngFor="let result of results">
+            <div class="result__fullname">{{ result.fullname }}</div>
+            <div class="result__email">{{ result.email }}</div>
+        </div>
     </div>
 </div>

@@ -6,13 +6,61 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./developers-search.component.less']
 })
 export class DevelopersSearchComponent implements OnInit {
-    results = [
-        { title: 'Lingwell', createdAt: '15/06/20' },
-        { title: 'Tetraedrum', createdAt: '21/06/20' },
-        { title: 'UTEAM', createdAt: '21/06/20' },
-        { title: 'Brancy', createdAt: '23/06/20' },
-        { title: 'Delity', createdAt: '25/06/20' },
-    ];
+    results = [{
+        fullname: 'Anastasiya Leitch',
+        email: 'a.leitch@gmail.com',
+    }, {
+        fullname: 'Mary Kramer',
+        email: 'a.leitch@gmail.com',
+    }, {
+        fullname: 'Heyva Fridman',
+        email: 'heyva.fridman@mail.ru',
+    }, {
+        fullname: 'Siaofang Levitt',
+        email: 'si.levitt@gmail.com',
+    }, {
+        fullname: 'Chongan Fridman',
+        email: 'y.fridman@gmail.com',
+    }, {
+        fullname: 'Alex Joi',
+        email: 'joi@mail.ru',
+    }, {
+        fullname: 'Anastasiya Leitch',
+        email: 'a.leitch@gmail.com',
+    }, {
+        fullname: 'Mary Kramer',
+        email: 'a.leitch@gmail.com',
+    }, {
+        fullname: 'Heyva Fridman',
+        email: 'heyva.fridman@mail.ru',
+    }, {
+        fullname: 'Siaofang Levitt',
+        email: 'si.levitt@gmail.com',
+    }, {
+        fullname: 'Chongan Fridman',
+        email: 'y.fridman@gmail.com',
+    }, {
+        fullname: 'Alex Joi',
+        email: 'joi@mail.ru',
+    }, {
+        fullname: 'Anastasiya Leitch',
+        email: 'a.leitch@gmail.com',
+    }, {
+        fullname: 'Mary Kramer',
+        email: 'a.leitch@gmail.com',
+    }, {
+        fullname: 'Heyva Fridman',
+        email: 'heyva.fridman@mail.ru',
+    }, {
+        fullname: 'Siaofang Levitt',
+        email: 'si.levitt@gmail.com',
+    }, {
+        fullname: 'Chongan Fridman',
+        email: 'y.fridman@gmail.com',
+    }, {
+        fullname: 'Alex Joi',
+        email: 'joi@mail.ru',
+    }];
 
     constructor() {}
 

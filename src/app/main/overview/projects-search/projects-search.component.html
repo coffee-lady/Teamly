@@ -1,1 +1,14 @@
-<p>projects-search works!</p>
+<div class="container">
+    <form class="search" action="">
+        <input class="search__input" type="text" name="projectsSearch" placeholder="Search projects...">
+    </form>
+    <div class="results">
+        <a routerLink="" class="result" *ngFor="let result of results">
+            <span class="result__title">{{ result.title }}</span>
+            <div class="result__createdAt">
+                <img class="createdAt__icon" src="../../../../assets/icons/calendar.png">
+                <span class="createdAt__date">{{ result.createdAt }}</span>
+            </div>
+        </a>
+    </div>
+</div>

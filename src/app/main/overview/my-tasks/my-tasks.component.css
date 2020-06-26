@@ -1,0 +1,187 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow-x: auto;
+}
+.table th,
+.table td {
+  padding: 0.75rem 1em !important;
+  vertical-align: top;
+}
+.table thead th {
+  vertical-align: bottom;
+  text-align: left;
+  font-size: 22px;
+  font-weight: normal;
+}
+.table tbody tr td {
+  padding: 1.5em 0;
+  vertical-align: middle !important;
+}
+.table tbody tr:nth-child(odd) {
+  background: #ECECEC;
+}
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+  .table thead,
+  .table tbody,
+  .table th,
+  .table td,
+  .table tr {
+    display: block;
+  }
+  .table thead tr {
+    display: none;
+  }
+  .table tr {
+    margin: 0 0 1rem 0;
+  }
+  .table td {
+    border: none;
+    position: relative;
+    padding-left: 50%;
+  }
+  .table td:before {
+    position: absolute;
+    top: 0;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+  }
+  .table td:nth-of-type(1):before {
+    content: "Task";
+  }
+  .table td:nth-of-type(2):before {
+    content: "Description";
+  }
+  .table td:nth-of-type(3):before {
+    content: "Due Date";
+  }
+  .table td:nth-of-type(4):before {
+    content: "";
+  }
+}
+.app-container {
+  height: calc(100vh - 70px);
+  overflow: auto;
+}
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 3em;
+}
+.title-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.title-box__button:hover {
+  opacity: 0.7;
+}
+.head__title {
+  font-size: 50px;
+  font-family: 'Galdeano', sans-serif;
+}
+.title-box__button {
+  position: absolute;
+  right: -3em;
+  top: -0.5em;
+}
+.title-box__button img {
+  width: 25px;
+}
+.createdAt {
+  color: #36495E;
+}
+.description {
+  width: 80%;
+  padding: 0 3em 1em;
+  line-height: 29px;
+}
+.users {
+  padding: 0.5em 3em;
+}
+.users__title {
+  font-size: 20px;
+}
+.users__list {
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: repeat(4, 1fr);
+  max-width: 850px;
+  color: #413C69;
+}
+.users__list li {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  list-style: none;
+}
+@media screen and (max-width: 1280px) {
+  .users__list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.add-task-button:hover {
+  opacity: 0.7;
+}
+.th-button {
+  display: flex;
+  justify-content: flex-end;
+  height: 100%;
+  width: 100%;
+}
+.task__title {
+  font-size: 18px;
+}
+.task__description {
+  max-width: 300px;
+  padding-right: 2em !important;
+}
+.task__dueDate {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding-right: 2em !important;
+}
+.task__dueDate span {
+  margin-left: 0.5em;
+}
+.task__buttons {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  height: 100%;
+}
+.task__button_developer {
+  padding: 0.7em 1.5em;
+  border-radius: 20px;
+  color: #ffffff;
+  font-size: 16px;
+  background: #0DB550;
+  transition: all 0.2s ease-in-out;
+}
+.task__button_developer:hover:not([disabled]) {
+  opacity: 0.7;
+  border-radius: 15px;
+}
+.task__button_developer[disabled] {
+  opacity: 0.7;
+}
+tbody td:nth-child(5n) {
+  max-width: 60px;
+}
+.task__buttons_manager button {
+  width: 160px;
+  transition: all 0.2s ease-in-out;
+}
+.task__buttons_manager button:hover:not([disabled]) {
+  opacity: 0.7;
+}
+.task__buttons_manager button[disabled] {
+  opacity: 0.7;
+}
