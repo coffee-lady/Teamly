@@ -15,8 +15,6 @@ module.exports = function getDevelopers(req, res) {
 
         for (let dev of devs) {
             delete dev.hashedPassword;
-            delete dev.currentTasks;
-            delete dev.role;
         }
 
         res.status(200).json({

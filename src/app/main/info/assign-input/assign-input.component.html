@@ -1,1 +1,9 @@
-<p>assign-input works!</p>
+<div class="app-container">
+    <div class="assign__title">Assign the {{ titleFor }} to the {{ infoAbout }}</div>
+    <form class="assign__form" [formGroup]="ManagerForm" novalidate (ngSubmit)="submit()">
+        <input class="assign__input" formControlName="email" ([ngModel])="email" type="text" [placeholder]="placeholder">
+        <button class="assign__button" type="submit">
+            <img src="../../../../assets/icons/add.png">
+        </button>
+    </form>
+</div>

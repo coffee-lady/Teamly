@@ -1,0 +1,12 @@
+<div class="app-container">
+    <div class="title">{{ title }}</div>
+    <div class="list">
+        <div class="user" *ngFor="let user of users">
+            <div >{{ user.fullname }}</div>
+            <div> {{ user.email }} </div>
+            <button type="submit">
+                <img src="../../../../assets/icons/cross_white.png">
+            </button>
+        </div>
+    </div>
+</div>

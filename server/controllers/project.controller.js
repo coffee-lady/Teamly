@@ -116,7 +116,7 @@ module.exports = function getProjectInfo(req, res) {
         });
 };
 
-module.exports = function updateProjectInfo(req, res) {
+module.exports = function updateProject(req, res) {
     let data = req.body;
     Project.findByIdAndUpdate(req.params.projectId, {
         title: data.title,

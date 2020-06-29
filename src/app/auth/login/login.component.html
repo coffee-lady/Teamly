@@ -1,1 +1,22 @@
-<p>login works!</p>
+<div class="app-container">
+    <div>
+        <img src="../../../assets/logo.png" alt="">
+        <div class="logo">teamly</div>
+    </div>
+
+    <form [formGroup]="userForm">
+        <div>
+            <input type="text" formControlName="email" placeholder="email@example.com">
+        </div>
+        <div>
+            <input type="text" formControlName="password" placeholder="password">
+        </div>
+        <div class="controls">
+            <div>
+                <button type="submit" (click)="login()">Sign In</button>
+            </div>
+            <a routerLink="">or sign up</a>
+        </div>
+    </form>
+    <a routerLink="" class="forgot-password">Forgot password?</a>
+</div>

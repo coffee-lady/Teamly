@@ -9,18 +9,8 @@ const myTasksRoutes = require('./my-tasks.route');
 
 router.use('/auth', authRoutes);
 router.use('/projects', projectRoutes);
-router.use('/projects/:projectId/task', taskRoutes);
-router.use('/developers', developersRoutes);
+router.use('/projects/:projectId/tasks', taskRoutes);
+router.use('/users', developersRoutes);
 router.use('/my-tasks', myTasksRoutes);
 
 module.exports = router;
-
-//     { path: '/project/:projectId' },
-//     { path: '/project/:projectId/info' },
-//     { path: '/project/new' },
-
-//     { path: '/my-tasks' },
-//     { path: '/developers' },
-
-//     { path: '/project/:projectId/task/:taskId' },
-//     { path: '/project/:projectId/task/new' }

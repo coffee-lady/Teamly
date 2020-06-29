@@ -1,0 +1,75 @@
+<div class="app-container">
+    <div class="head">
+        <div class="title-box">
+            <div class="head__title">{{ project.title }}</div>
+            <button class="title-box__button" type="submit">
+                <img src="../../../../assets/icons/edit.png">
+            </button>
+        </div>
+        <div class="createdAt">Created: {{ project.createdAt }}</div>
+    </div>
+
+    <div class="description">{{ project.description }}</div>
+
+    <div class="users">
+        <div class="users__title">Managers:</div>
+        <ul class="users__list">
+            <li *ngFor="let manager of project.managers">
+                {{ manager }};
+            </li>
+        </ul>
+    </div>
+
+    <div class="users">
+        <div class="users__title">Developers:</div>
+        <ul class="users__list">
+            <li *ngFor="let dev of project.developers">
+                <span>{{ dev }}</span>
+            </li>
+        </ul>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Task</th>
+                <th scope="col">Description</th>
+                <th scope="col">Due Date</th>
+                <th scope="col">
+                    <div class="th-button">
+                        <button class="add-task-button" type="submit">
+                            <img src="../../../../assets/icons/add_black.png">
+                        </button>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let task of tasks">
+                <td class="task__title">{{ task.title }}</td>
+                <td class="task__description">{{ task.description }}</td>
+                <td>
+                    <div class="task__dueDate">
+                        <img src="../../../../assets/icons/clock.png">
+                        <span [ngSwitch]="task.completed">
+                            <ng-template [ngSwitchCase]="true">Completed!</ng-template>
+                            <ng-template [ngSwitchCase]="false">{{ task.dueDate }}</ng-template>
+                        </span>
+                    </div>
+                </td>
+                <td [ngSwitch]="user.role">
+                    <ng-template ngSwitchCase="manager">
+                        <div class="task__buttons_manager">
+                            <button type="submit" [disabled]="task.completed"><img src="../../../../assets/icons/checklist.png"></button>
+                            <button type="submit" [disabled]="task.completed"><img src="../../../../assets/icons/edit_little.png"></button>
+                            <button type="submit"><img src="../../../../assets/icons/delete_black.png"></button>
+                        </div>
+                    </ng-template>
+                    <ng-template ngSwitchCase="developer">
+                        <button class="task__button_developer" type="submit" [disabled]="task.completed">Take the task</button>
+                    </ng-template>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

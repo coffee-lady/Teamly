@@ -60,7 +60,7 @@ module.exports = function getTaskInfo(req, res) {
         });
 };
 
-module.exports = function updateTaskInfo(req, res) {
+module.exports = function updateTask(req, res) {
     let data = req.body;
     Task
         .findByIdAndUpdate(req.params.taskId, {

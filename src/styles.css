@@ -11,6 +11,9 @@ body {
 a {
   text-decoration: none;
 }
+input {
+  resize: none;
+}
 input,
 input:focus {
   border: none;

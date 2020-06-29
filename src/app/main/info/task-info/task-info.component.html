@@ -1,1 +1,23 @@
-<p>task-info works!</p>
+<div class="app-container">
+    <app-task-left-panel></app-task-left-panel>
+    <div class="container">
+        <div class="general-inform">
+            <div class="head">
+                <div class="title-box">
+                    <div class="head__title">{{ task.title }}</div>
+                </div>
+
+                <div class="createdAt">Created: {{ task.createdAt }}</div>
+            </div>
+
+            <div class="description">{{ task.description }}</div>
+        </div>
+
+        <app-assign-input [titleFor]="'developer'" [infoAbout]="'task'" (checkEmail)="checkEmail($event)"></app-assign-input>
+
+        <div class="buttons">
+            <button class="buttons__delete" anim="ripple" type="submit">Delete</button>
+            <button class="buttons__save" anim="ripple" type="submit">Save</button>
+        </div>
+    </div>
+</div>

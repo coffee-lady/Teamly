@@ -1,15 +1,38 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/shared/services/auth/auth.service';
+import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.less']
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.less', '../../shared/styles/auth.less']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
-  constructor() { }
+    userForm = new FormGroup({
+        email: new FormControl('', [Validators.required, Validators.email]),
+        password: new FormControl('', [Validators.required]),
+    });
 
-  ngOnInit(): void {
-  }
+    get email(): AbstractControl {
+        return this.userForm.get('email');
+    }
 
+    get password(): AbstractControl {
+        return this.userForm.get('password');
+    }
+
+    constructor(private router: Router, private authService: AuthService) {}
+
+    login(): void {
+        if (this.userForm.invalid) {
+            return;
+        }
+
+        const { email, password } = this.userForm.getRawValue();
+        this.authService.login(email, password).subscribe(() => {
+            this.router.navigateByUrl('/');
+        });
+    }
 }

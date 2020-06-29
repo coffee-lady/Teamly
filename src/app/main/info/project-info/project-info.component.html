@@ -1,1 +1,23 @@
-<p>project-info works!</p>
+<div class="app-container">
+    <app-project-left-panel></app-project-left-panel>
+    <div class="container">
+        <div class="general-inform">
+            <div class="head">
+                <div class="title-box">
+                    <div class="head__title">{{ project.title }}</div>
+                </div>
+                <div class="createdAt">Created: {{ project.createdAt }}</div>
+            </div>
+
+            <div class="description">{{ project.description }}</div>
+        </div>
+
+        <app-assign-input [titleFor]="'manager'" [infoAbout]="'project'" (checkManagerEmail)="checkEmail($event)"></app-assign-input>
+        <app-assign-input [titleFor]="'developer'" [infoAbout]="'project'" (checkDeveloperEmail)="checkEmail($event)"></app-assign-input>
+
+        <div class="buttons">
+            <button class="buttons__delete" anim="ripple" type="submit">Delete</button>
+            <button class="buttons__save" anim="ripple" type="submit">Save</button>
+        </div>
+    </div>
+</div>

@@ -1,26 +1,29 @@
-<div class="container">
-<table class="table table-borderless">
-    <thead>
-        <tr>
-            <th scope="col">Task</th>
-            <th scope="col">Description</th>
-            <th scope="col">Due Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let dev of devs">
-            <td class="dev__fullname">{{ dev.fullname }}</td>
-            <td class="dev__email">{{ dev.email }}</td>
-            <td class="dev__projects">{{ dev.projects }}</td>
-            <td *ngIf="user.role==='manager'">
-                <div class="manager-buttons">
-                    <button type="sumbit"><img src="../../../../assets/icons/checklist.png"></button>
-                    <button type="sumbit"><img src="../../../../assets/icons/add_black.png"></button>
-                    <button type="sumbit"><img src="../../../../assets/icons/edit_little.png"></button>
-                    <button type="sumbit"><img src="../../../../assets/icons/delete_black.png"></button>
-                </div>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div class="app-container">
+    <app-developers-search></app-developers-search>
+    <div class="container">
+        <table class="table table-borderless">
+            <thead>
+                <tr>
+                    <th scope="col">Task</th>s
+                    <th scope="col">Description</th>
+                    <th scope="col">Due Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let dev of devs">
+                    <td class="dev__fullname">{{ dev.fullname }}</td>
+                    <td class="dev__email">{{ dev.email }}</td>
+                    <td class="dev__projects">{{ dev.projects }}</td>
+                    <td *ngIf="user.role==='manager'">
+                        <div class="manager-buttons">
+                            <button type="sumbit"><img src="../../../../assets/icons/checklist.png"></button>
+                            <button type="sumbit"><img src="../../../../assets/icons/add_black.png"></button>
+                            <button type="sumbit"><img src="../../../../assets/icons/edit_little.png"></button>
+                            <button type="sumbit"><img src="../../../../assets/icons/delete_black.png"></button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

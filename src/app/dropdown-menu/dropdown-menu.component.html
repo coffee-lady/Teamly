@@ -1,0 +1,11 @@
+<div class="dropdown-container">
+    <div class="dropdown">
+        <div class="select">
+            <span class="result">Choose a {{ title }}</span>
+            <img src="../../../../assets/icons/arrow_black.png">
+        </div>
+        <ul class="dropdown-menu">
+            <li *ngFor="let elem of dataToSelect" (click)="choose(elem)">{{ elem }}</li>
+        </ul>
+    </div>
+</div>

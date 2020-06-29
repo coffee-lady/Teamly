@@ -1,0 +1,32 @@
+<div class="app-container">
+    <div class="block">
+        <div class="title">Task for project...</div>
+        <div class="dropdown-container">
+            <div class="dropdown">
+                <div class="select">
+                    <span class="result">Choose a project</span>
+                    <img src="../../../../../assets/icons/arrow.png">
+                </div>
+                <ul class="dropdown-menu">
+                    <li *ngFor="let project of projects">{{ project.title }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="block">
+        <div class="title">Set due date</div>
+        <form class="dueDate">
+            <input type="text" placeholder="16/06/2020">
+        </form>
+    </div>
+    <div class="block">
+        <div class="title">Task for developer...</div>
+        <div class="user">
+            <div>{{task.takenByDev.fullname}}</div>
+            <div>{{task.takenByDev.email}}</div>
+            <button class="user__remove-button" type="submit">
+                <img src="../../../../assets/icons/cross_white.png">
+            </button>
+        </div>
+    </div>
+</div>
