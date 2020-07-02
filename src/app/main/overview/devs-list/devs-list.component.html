@@ -1,5 +1,5 @@
 <div class="app-container">
-    <app-developers-search></app-developers-search>
+    <app-developers-search (goToUser)="scrollToUser($event)"></app-developers-search>
     <div class="container">
         <table class="table table-borderless">
             <thead>
@@ -16,11 +16,30 @@
                     <td class="dev__projects">{{ dev.projects }}</td>
                     <td *ngIf="user.role==='manager'">
                         <div class="manager-buttons">
-                            <button type="sumbit"><img src="../../../../assets/icons/checklist.png"></button>
-                            <button type="sumbit"><img src="../../../../assets/icons/add_black.png"></button>
-                            <button type="sumbit"><img src="../../../../assets/icons/edit_little.png"></button>
-                            <button type="sumbit"><img src="../../../../assets/icons/delete_black.png"></button>
+                            <button type="sumbit" tooltip="editTooltip" content-type="template" placement="left">
+                                <img src="../../../../assets/icons/edit_little.png">
+                            </button>
+                            <button type="sumbit" (click)="deleteDev(dev._id)">
+                                <img src="../../../../assets/icons/delete_black.png">
+                            </button>
                         </div>
+
+                        <ng-template #editTooltip>
+                            <div class="edit-projects-tooltip">
+                                <form class="search">
+                                    <input class="search__input searchEditInput" type="text" placeholder="Search projects...">
+                                </form>
+                                <div class="results">
+                                    <a class="result" *ngFor="let project of editProjects" href="project._id">
+                                        <span class="result__title">{{ project.title }}</span>
+                                        <div class="result__buttons" [ngSwitch]="isProjOfDev(dev, project._id)">
+                                            <a *ngSwitchCase="undefined" (click)="assignDevToProject(dev._id, project._id)"><img src="../../../../assets/icons/assign_white.png"></a>
+                                            <a *ngSwitchDefault (click)="removeDevFromProject(dev._id, project._id)"><img src="../../../../assets/icons/delete_white.png"></a>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </ng-template>
                     </td>
                 </tr>
             </tbody>

@@ -9,9 +9,9 @@ import * as $ from 'jquery';
 export class DropdownMenuComponent implements OnInit {
     @Input() dataToSelect: string[];
     @Input() title: string;
-    @Output() elemChoosed = new EventEmitter < string > ();
+    @Output() elemChoosed = new EventEmitter < object > ();
 
-    choose(elem: string) {
+    choose(elem: object) {
         this.elemChoosed.emit(elem);
     }
 

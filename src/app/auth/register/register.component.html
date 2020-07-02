@@ -1,26 +1,41 @@
 <div class="app-container">
     <div>
-        <img src="../../../assets/logo.png" alt="">
+        <img src="../../../assets/logo.png">
         <div class="logo">teamly</div>
     </div>
 
-    <form [formGroup]="userForm">
+    <form [formGroup]="userForm" novalidate method="post" (ngSubmit)="register()">
         <div>
             <input type="text" formControlName="email" placeholder="email@example.com">
+            <div *ngIf="email.invalid && (email.dirty || email.touched)">
+                <div class="invalid-form-alert" *ngIf="userForm.controls['email'].hasError('email') && (userForm.controls['email'].dirty || userForm.controls['email'].touched)">
+                    Invalid email
+                </div>
+            </div>
         </div>
         <div>
             <input type="text" formControlName="fullname" placeholder="John Smith">
+            <div class="invalid-form-alert" *ngIf="userForm.controls['fullname'].hasError('required') && (userForm.controls['fullname'].dirty || userForm.controls['fullname'].touched)">
+                Required field
+            </div>
         </div>
-        <app-dropdown-menu [title]="role" [dataToSelect]="['Manager', 'Developer']" (elemChoosed)="chooseRole(elem)"></app-dropdown-menu>
         <div>
-            <input type="text" formControlName="password" placeholder="password">
+            <app-dropdown-menu title="role" [dataToSelect]="[{title: 'Manager'}, {title: 'Developer'}]" (click)="roleTouched()" (elemChoosed)="chooseRole($event)"></app-dropdown-menu>
+            <div class="invalid-form-alert" *ngIf="userForm.controls['role'].hasError('required') && userForm.controls['role'].touched">
+                Required field
+            </div>
+        </div>
+        <div>
+            <input type="password" formControlName="password" placeholder="password">
+            <div class="invalid-form-alert" *ngIf="userForm.controls['password'].hasError('required') && (userForm.controls['password'].dirty || userForm.controls['password'].touched)">
+                Required field
+            </div>
         </div>
         <div class="controls">
             <div>
-                <button type="submit" (click)="register()">Sign In</button>
+                <button type="submit" [disabled]="!userForm.valid">Sign Up</button>
             </div>
-            <a routerLink="">or sign up</a>
+            <a routerLink="/auth/login">or sign in</a>
         </div>
     </form>
-    <a routerLink="" class="forgot-password">Forgot password?</a>
 </div>

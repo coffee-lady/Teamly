@@ -1,4 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { User, Task } from 'src/app/shared/interfaces';
+import { AuthService } from 'src/app/shared/services/auth/auth.service';
+import { TaskService } from 'src/app/shared/services/tasks/tasks.service';
+import { forkJoin } from 'rxjs';
+import { ThrowStmt } from '@angular/compiler';
+import { UsersService } from 'src/app/shared/services';
+import { mergeMap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-my-tasks',
@@ -6,88 +13,43 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./my-tasks.component.less']
 })
 export class MyTasksComponent implements OnInit {
-    project = {
-        title: 'Tetraedrum',
-        description: `Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-Aenean commodo ligula eget dolor. Aenean massa.
-Cum sociis natoque penatibus et magnis dis parturient montes, nascetur
-ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis,
-em. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
-aliquet nec, vulputate eget, arcu.
-In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.`,
-        createdAt: '21/06/20',
-        managers: ['Anastasiya Leitch', 'Heyva Fridman', 'Alex Solomintsev', 'Mary Kramer'],
-        developers: ['Tatyana Velikaya', 'Sima Leitch', 'Max Tomsky', 'Anastasiya Serebryanskaya', 'Venkeng Solony', 'Alex Solomintsev', 'Max Tomsky', 'Alex Solomintsev'],
-    };
-    tasks = [{
-        projectName: 'stask',
-        title: 'Create News Block',
-        description: `Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa...`,
-        dueDate: '26/05/2020',
-        completed: false
-    }, {
-        projectName: 'Delity',
-        title: 'Set Google Auth',
-        description: `Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa...`,
-        dueDate: '30/05/2020',
-        completed: false
-    }, {
-        projectName: 'Tetraedrum',
-        title: 'Make The Design',
-        description: `Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa...`,
-        dueDate: '02/06/2020',
-        completed: true
-    }, {
-        projectName: 'ClubIT',
-        title: 'Print Hello World',
-        description: `Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean commodo ligula eget dolor. Aenean massa...`,
-        dueDate: '10/06/2020',
-        completed: false
-    }, {
-        projectName: 'Delity',
-        title: 'Set Google Auth',
-        description: `Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa...`,
-        dueDate: '30/05/2020',
-        completed: false
-    }, {
-        projectName: 'Tetraedrum',
-        title: 'Make The Design',
-        description: `Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa...`,
-        dueDate: '02/06/2020',
-        completed: true
-    }, {
-        projectName: 'ClubIT',
-        title: 'Print Hello World',
-        description: `Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean commodo ligula eget dolor. Aenean massa...`,
-        dueDate: '10/06/2020',
-        completed: false
-    }, {
-        projectName: 'Delity',
-        title: 'Set Google Auth',
-        description: `Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa...`,
-        dueDate: '30/05/2020',
-        completed: false
-    }, {
-        projectName: 'Tetraedrum',
-        title: 'Make The Design',
-        description: `Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa...`,
-        dueDate: '02/06/2020',
-        completed: true
-    }, {
-        projectName: 'ClubIT',
-        title: 'Print Hello World',
-        description: `Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean commodo ligula eget dolor. Aenean massa...`,
-        dueDate: '10/06/2020',
-        completed: false
-    }];
-    user = {
-        fullname: 'Anastasiya Leitch',
-        email: 'anastasiya.leitch@gmail.com',
-        role: 'manager'
-    };
+    tasks: Task[];
 
-    constructor() {}
+    user: User;
 
-    ngOnInit(): void {}
+    constructor(private authService: AuthService, private taskService: TaskService, private userService: UsersService) {}
+
+    ngOnInit(): void {
+        this.authService
+            .me()
+            .pipe(
+                mergeMap((user: User) => {
+                    this.user = user;
+                    return this.taskService.getMyTasks(user._id);
+                }))
+            .subscribe((tasks: Task[]) => {
+                this.tasks = tasks;
+            });
+    }
+
+    scrollToProject(event: any) {
+        const id = event.data.devId;
+        const devTr = document.querySelector(`tr[[id]="${id}"]`);
+        const yCoord = devTr.getBoundingClientRect().top + pageYOffset;
+        document.documentElement.scrollTo(0, yCoord);
+    }
+
+    markAsCompleted(taskId: string) {
+        const taskData = this.tasks.find(task => task._id === taskId);
+        taskData.completed = true;
+        delete taskData.developerData;
+        delete taskData.projectData;
+        this.taskService.createOrUpdateTask(taskData, taskData.projectId, taskData._id).subscribe();
+    }
+
+    removeFromMyTasks(taskId: string) {
+        this.user.currentTasks.splice(this.user.currentTasks.indexOf(taskId), 1);
+        this.userService.updateDeveloper(this.user).subscribe();
+    }
 
 }

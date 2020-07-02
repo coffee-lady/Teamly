@@ -1,37 +1,30 @@
 <div class="app-container">
-    <app-projects-search></app-projects-search>
+    <app-projects-search (goToProject)="scrollToProject($event)"></app-projects-search>
     <div class="container">
-        <table class="table table-borderless">
+        <table class="table">
             <thead>
                 <tr>
                     <th scope="col">Project</th>
                     <th scope="col">Task</th>
                     <th scope="col">Description</th>
                     <th scope="col">Due Date</th>
-                    <th scope="col">
-                        <div class="th-button">
-                            <button class="add-task-button" type="submit">
-                                <img src="../../../../assets/icons/add_black.png">
-                            </button>
-                        </div>
-                    </th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let task of tasks">
-                    <td class="task__title">{{ task.projectName }}</td>
+                    <td class="task__title">{{ task.projectData.title }}</td>
                     <td class="task__title">{{ task.title }}</td>
                     <td class="task__description">{{ task.description }}</td>
                     <td>
                         <div class="task__dueDate">
                             <img src="../../../../assets/icons/clock.png">
-                            <span>{{ task.dueDate }}</span>
+                            <span>{{ task.dueDate | date:'shortDate' }}</span>
                         </div>
                     </td>
                     <td>
-                        <div class="task__buttons task__buttons_manager">
-                            <button type="submit"><img src="../../../../assets/icons/checklist.png"></button>
-                            <button type="submit"><img src="../../../../assets/icons/close.png"></button>
+                        <div class="task__buttons">
+                            <button type="submit" (click)="markAsCompleted(task._id)"><img src="../../../../assets/icons/checklist.png"></button>
+                            <button type="submit" (click)="removeFromMyTasks(task._id)"><img src="../../../../assets/icons/close.png"></button>
                         </div>
                     </td>
                 </tr>

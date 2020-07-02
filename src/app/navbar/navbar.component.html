@@ -1,26 +1,26 @@
 <div class="nav">
-    <a [routerLink]="/" class="nav__link nav__link_logo">
+    <a routerLink="" class="nav__link nav__link_logo">
         <img src="../../../../assets/logo.png" class="logo__icon">
         <span class="logo__title">teamly</span>
     </a>
 
     <div class="nav-container links">
-        <a [routerLink]='/developers' [routerLink]Active="active" class="nav__link">DEVELOPERS</a>
+        <a routerLink='/developers' routerLinkActive="active" class="nav__link">DEVELOPERS</a>
         <div class="dropdown">
             <a class="nav__link">NEW</a>
             <div class="dropdown-content" *ngIf="user.role === 'manager'">
-                <a [routerLink]="/projects/new" class="nav__link nav__link_with-icon">
+                <a routerLink="/projects/new" class="nav__link nav__link_with-icon">
                     <img src="../../../../assets/icons/rocket.png">
                     <span>New project</span>
                 </a>
-                <a [routerLink]="/projects/:projectId/task/new" class="nav__link nav__link_with-icon">
+                <a routerLink="/projects/tasks/new" class="nav__link nav__link_with-icon">
                     <img src="../../../../assets/icons/mission.png">
                     <span>New task</span>
                 </a>
             </div>
         </div>
-        <a [routerLink]='/projects/:projectId' [routerLinkActive]="active" class="nav__link">PROJECTS</a>
-        <a [routerLink]='/my-tasks' [routerLinkActive]="active" *ngIf="user.role === 'developer'" class="nav__link">TASKS</a>
+        <a routerLink='/projects' routerLinkActive="active" class="nav__link">PROJECTS</a>
+        <a routerLink='/my-tasks' routerLinkActive="active" *ngIf="user.role === 'developer'" class="nav__link">TASKS</a>
     </div>
 
     <div class="nav-container">

@@ -21,7 +21,7 @@ const TaskSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  projectName: {
+  projectId: {
     type: String,
     required: true
   },

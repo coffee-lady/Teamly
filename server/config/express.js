@@ -4,6 +4,8 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
+const helmet = require('helmet');
+const cors = require('cors');
 
 const routes = require('../routes/index.route');
 const passport = require('passport');
@@ -12,7 +14,7 @@ const app = express();
 
 app.use(logger('dev'));
 
-const distDir = '../../dist/';
+const distDir = '../../dist/teamly';
 app.use(express.static(path.join(__dirname, distDir)))
 app.use(/^((?!(api)).)*/, (req, res) => {
   res.sendFile(path.join(__dirname, distDir + '/index.html'));

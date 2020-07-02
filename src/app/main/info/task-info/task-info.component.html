@@ -1,23 +1,53 @@
-<div class="app-container">
-    <app-task-left-panel></app-task-left-panel>
+<form formGroup="form" class="app-container">
+    <div class="left-panel">
+        <div class="block" [ngSwitch]="isNew">
+            <div class="block__title">Task for project...</div>
+            <ng-template ngSwitchCase="true">
+                <app-dropdown-menu title="project" [dataToSelect]="projects" (elemChoosed)="chooseProject($event)"></app-dropdown-menu>
+            </ng-template>
+            <ng-template ngSwitchCase="false">
+                <div class="block__user">
+                    <div>{{ task.projectData.title }}</div>
+                    <div>{{ task.projectData.description }}</div>
+                    <button class="user__remove-button" type="submit" (click)="removeDeveloper()">
+                        <img src="../../../../assets/icons/cross_white.png">
+                    </button>
+                </div>
+            </ng-template>
+        </div>
+        <div class="block">
+            <div class="block__title">Set due date</div>
+            <form class="block__dueDate">
+                <input formControlName="dueDateString" [(ngModel)]="dueDateString" placeholder="16/06/2020">
+            </form>
+        </div>
+        <div class="block">
+            <div class="block__title">Task for developer...</div>
+            <div class="block__user" *ngIf="task.takenByDev">
+                <div>{{task.developerData.fullname}}</div>
+                <div>{{task.developerData.email}}</div>
+                <button class="user__remove-button" type="submit" (click)="removeDeveloper()">
+                    <img src="../../../../assets/icons/cross_white.png">
+                </button>
+            </div>
+        </div>
+    </div>
     <div class="container">
         <div class="general-inform">
             <div class="head">
                 <div class="title-box">
-                    <div class="head__title">{{ task.title }}</div>
+                    <textarea formControlName="title" class="head__title" [(ngModel)]="task.title"></textarea>
                 </div>
-
-                <div class="createdAt">Created: {{ task.createdAt }}</div>
+                <div class="createdAt">Created: {{ task.createdAt | date:'shortDate' }}</div>
             </div>
-
-            <div class="description">{{ task.description }}</div>
+            <textarea formControlName="description" class="description" [(ngModel)]="task.description"></textarea>
         </div>
 
-        <app-assign-input [titleFor]="'developer'" [infoAbout]="'task'" (checkEmail)="checkEmail($event)"></app-assign-input>
+        <app-assign-input [userRole]="'developer'" [assignUserTo]="'task'" (assignUser)="assignDeveloper($event)"></app-assign-input>
 
         <div class="buttons">
-            <button class="buttons__delete" anim="ripple" type="submit">Delete</button>
-            <button class="buttons__save" anim="ripple" type="submit">Save</button>
+            <button class="buttons__delete" (click)="deleteTask()">Delete</button>
+            <button class="buttons__save" (click)="saveTask()">Save</button>
         </div>
     </div>
-</div>
+</form>

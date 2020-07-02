@@ -23,6 +23,7 @@ form {
     margin-top: 2em;
 
     >div {
+        position: relative;
         padding: 1em;
     }
 }
@@ -60,6 +61,10 @@ button {
     margin: auto;
     text-decoration: none;
 
+    &[disabled] {
+        opacity: 0.7;
+    }
+
     &:hover {
         opacity: 0.7;
     }
@@ -76,5 +81,20 @@ a {
 
     &:hover {
         text-decoration: underline;
+        cursor: pointer;
     }
+}
+
+input.ng-touched.ng-invalid {
+    box-shadow: 0 0 0 2.5px #b40000;
+}
+
+app-dropdown-menu.ng-touched.ng-invalid {
+    box-shadow: 0 0 0 2.5px #b40000;
+}
+
+.invalid-form-alert {
+    position: absolute;
+    padding: 0.2em 1em;
+    color: #b40000;
 }

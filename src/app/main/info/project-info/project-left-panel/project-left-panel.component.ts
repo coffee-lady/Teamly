@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { User } from 'src/app/shared/interfaces';
 
 @Component({
     selector: 'app-project-left-panel',
@@ -6,65 +7,8 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./project-left-panel.component.less']
 })
 export class ProjectLeftPanelComponent implements OnInit {
-    managers = [{
-        fullname: 'Anastasiya Leitch',
-        email: 'a.leitch@gmail.com',
-    }, {
-        fullname: 'Mary Kramer',
-        email: 'a.leitch@gmail.com',
-    }, {
-        fullname: 'Heyva Fridman',
-        email: 'heyva.fridman@mail.ru',
-    }, {
-        fullname: 'Siaofang Levitt',
-        email: 'si.levitt@gmail.com',
-    }, {
-        fullname: 'Chongan Fridman',
-        email: 'y.fridman@gmail.com',
-    }];
-    developers = [{
-        fullname: 'Anastasiya Leitch',
-        email: 'a.leitch@gmail.com',
-    }, {
-        fullname: 'Mary Kramer',
-        email: 'a.leitch@gmail.com',
-    }, {
-        fullname: 'Heyva Fridman',
-        email: 'heyva.fridman@mail.ru',
-    }, {
-        fullname: 'Siaofang Levitt',
-        email: 'si.levitt@gmail.com',
-    }, {
-        fullname: 'Chongan Fridman',
-        email: 'y.fridman@gmail.com',
-    }, {
-        fullname: 'Alex Joi',
-        email: 'joi@mail.ru',
-    }, {
-        fullname: 'Anastasiya Leitch',
-        email: 'a.leitch@gmail.com',
-    }, {
-        fullname: 'Mary Kramer',
-        email: 'a.leitch@gmail.com',
-    }, {
-        fullname: 'Heyva Fridman',
-        email: 'heyva.fridman@mail.ru',
-    }, {
-        fullname: 'Siaofang Levitt',
-        email: 'si.levitt@gmail.com',
-    }, {
-        fullname: 'Chongan Fridman',
-        email: 'y.fridman@gmail.com',
-    }, {
-        fullname: 'Alex Joi',
-        email: 'joi@mail.ru',
-    }, {
-        fullname: 'Anastasiya Leitch',
-        email: 'a.leitch@gmail.com',
-    }, {
-        fullname: 'Mary Kramer',
-        email: 'a.leitch@gmail.com',
-    }];
+    @Input() managers: User[];
+    @Input() developers: User[];
     constructor() {}
 
     ngOnInit(): void {}

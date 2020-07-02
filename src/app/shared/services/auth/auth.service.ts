@@ -1,16 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpRequest, HttpResponse } from '@angular/common/http';
 
 import { BehaviorSubject, Observable } from 'rxjs';
-import { tap, pluck } from 'rxjs/operators';
+import { tap, pluck, map, mergeMap } from 'rxjs/operators';
 
 import { TokenStorage } from './token.storage';
 import { User } from '../../interfaces';
-
-declare global {
-    interface Window { user: any; }
-}
-window.user = window.user || {};
+import { Router } from '@angular/router';
+import { JsonPipe } from '@angular/common';
 
 interface AuthResponse {
     token: string;
@@ -23,43 +20,31 @@ interface AuthResponse {
 export class AuthService {
     private user$ = new BehaviorSubject < User | null > (null);
 
-    constructor(private http: HttpClient, private tokenStorage: TokenStorage) {}
+    constructor(private router: Router, private http: HttpClient, private tokenStorage: TokenStorage) {}
 
-    login(email: string, password: string): Observable < User > {
+    login(email: string, password: string): Observable < HttpResponse < { user: User, token: string } > > {
         return this.http
-            .post < AuthResponse > ('/api/auth/login', { email, password })
-            .pipe(
-                tap(({ token, user }) => {
-                    this.setUser(user);
-                    this.tokenStorage.saveToken(token);
-                }),
-                pluck('user')
-            );
+            .post('/api/auth/login', { email, password }, { observe: 'response' })
+            .pipe(map((response: HttpResponse < { user: User, token: string } > ) => {
+                this.setUser(response.body.user);
+                this.tokenStorage.saveToken(response.body.token);
+                return response;
+            }));
     }
 
-    register(
-        fullname: string,
-        email: string,
-        password: string,
-    ): Observable < User > {
-        return this.http
-            .post < AuthResponse > ('/api/auth/register', {
-                fullname,
-                email,
-                password,
-            })
-            .pipe(
-                tap(({ token, user }) => {
-                    this.setUser(user);
-                    this.tokenStorage.saveToken(token);
-                }),
-                pluck('user')
-            );
-    }
+    register(fullname: string, email: string, password: string, role: string):
+        Observable < HttpResponse < { user: User, token: string } > > {
+            return this.http
+                .post('/api/auth/register', { fullname, email, password, role }, { observe: 'response' })
+                .pipe(map((response: HttpResponse < { user: User, token: string } > ) => {
+                    this.setUser(response.body.user);
+                    this.tokenStorage.saveToken(response.body.token);
+                    return response;
+                }));
+        }
 
     setUser(user: User | null): void {
         this.user$.next(user);
-        window.user = user;
     }
 
     getUser(): Observable < User | null > {
@@ -82,7 +67,6 @@ export class AuthService {
     signOut(): void {
         this.tokenStorage.signOut();
         this.setUser(null);
-        delete window.user;
     }
 
     getAuthorizationHeaders() {

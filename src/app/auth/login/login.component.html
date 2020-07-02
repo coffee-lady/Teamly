@@ -1,22 +1,32 @@
 <div class="app-container">
     <div>
-        <img src="../../../assets/logo.png" alt="">
+        <img src="../../../assets/logo.png">
         <div class="logo">teamly</div>
     </div>
 
-    <form [formGroup]="userForm">
+    <form [formGroup]="userForm" novalidate method="post" (ngSubmit)="login()">
         <div>
             <input type="text" formControlName="email" placeholder="email@example.com">
+            <div *ngIf="email.invalid && (email.dirty || email.touched)">
+                <div class="invalid-form-alert" *ngIf="userForm.controls['email'].hasError('email') && (userForm.controls['email'].dirty || userForm.controls['email'].touched)">
+                    Invalid email
+                </div>
+            </div>
         </div>
         <div>
-            <input type="text" formControlName="password" placeholder="password">
+            <input type="password" formControlName="password" placeholder="password">
+            <div class="invalid-form-alert" *ngIf="userForm.controls['password'].hasError('required') && (userForm.controls['password'].dirty || userForm.controls['password'].touched)">
+                Required field
+            </div>
+            <div class="invalid-form-alert" *ngIf="userForm.controls['password'].hasError('invalidPassword') && (userForm.controls['password'].dirty || userForm.controls['password'].touched)">
+                Invalid password
+            </div>
         </div>
         <div class="controls">
             <div>
-                <button type="submit" (click)="login()">Sign In</button>
+                <button type="submit" [disabled]="!userForm.valid" (click)="login()">Sign In</button>
             </div>
-            <a routerLink="">or sign up</a>
+            <a routerLink="/auth/register">or sign up</a>
         </div>
     </form>
-    <a routerLink="" class="forgot-password">Forgot password?</a>
 </div>

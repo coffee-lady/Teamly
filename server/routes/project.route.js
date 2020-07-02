@@ -3,11 +3,12 @@ const router = express.Router();
 
 const projectCtrl = require('../controllers/project.controller');
 
+router.get('/', projectCtrl.getAllProjects);
 router.post('/new', projectCtrl.createProject);
 router.post('/search', projectCtrl.findProject);
-router.get('/:projectId', projectCtrl.getProjectOverview);
+router.post('/searchById', projectCtrl.findProjectById);
+router.get('/:projectId', projectCtrl.getProjectData);
 router.post('/:projectId', projectCtrl.updateProject);
-router.get('/:projectId/info', projectCtrl.getProjectInfo);
 router.delete('/:projectId', projectCtrl.deleteProject);
 
 module.exports = router;

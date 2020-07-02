@@ -3,9 +3,9 @@
         <input id="searchInput" class="search__input" type="text" name="projectsSearch" placeholder="Search developers...">
     </form>
     <div class="results">
-        <div routerLink="" class="result" *ngFor="let result of results">
-            <div class="result__fullname">{{ result.fullname }}</div>
-            <div class="result__email">{{ result.email }}</div>
-        </div>
+        <a class="result" *ngFor="let dev of developers" href="dev._id" (click)="linkOnClick(dev._id)">
+            <div class="result__fullname">{{ dev.fullname }}</div>
+            <div class="result__email">{{ dev.email }}</div>
+        </a>
     </div>
 </div>

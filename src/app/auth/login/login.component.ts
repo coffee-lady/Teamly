@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
+import { passwordValidator } from 'src/app/shared/validators/password.validator';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-login',
@@ -12,7 +14,7 @@ export class LoginComponent {
 
     userForm = new FormGroup({
         email: new FormControl('', [Validators.required, Validators.email]),
-        password: new FormControl('', [Validators.required]),
+        password: new FormControl('', [Validators.required, passwordValidator]),
     });
 
     get email(): AbstractControl {
@@ -31,7 +33,12 @@ export class LoginComponent {
         }
 
         const { email, password } = this.userForm.getRawValue();
-        this.authService.login(email, password).subscribe(() => {
+        this.authService.login(email, password).subscribe(response => {
+            if (response.status !== 200) {
+                this.userForm.controls.email.setErrors({ email: true });
+                return;
+            }
+
             this.router.navigateByUrl('/');
         });
     }

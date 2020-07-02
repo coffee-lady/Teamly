@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ProjectDataService } from 'src/app/shared/services/project/project-data.service';
-import { Project } from 'src/app/shared/interfaces';
+import { Project, User } from 'src/app/shared/interfaces';
+import { ProjectService } from 'src/app/shared/services/projects/projects.service';
+import { AuthService } from 'src/app/shared/services/auth/auth.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 
 @Component({
     selector: 'app-project-info',
@@ -10,31 +14,74 @@ import { Project } from 'src/app/shared/interfaces';
 
 
 export class ProjectInfoComponent implements OnInit {
+    user: User;
     project: Project;
 
-    // project = {
-    //     title: 'Tetraedrum',
-    //     description: `Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-    //                   Aenean commodo ligula eget dolor. Aenean massa.
-    //                   Cum sociis natoque penatibus et magnis dis parturient montes, nascetur
-    //                   ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis,
-    //                   em. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
-    //                   aliquet nec, vulputate eget, arcu.
-    //                   In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.`,
-    //     createdAt: '21/06/20',
-    // };
+    form: FormGroup = new FormGroup({
+        title: new FormControl('', Validators.required),
+        description: new FormControl('', Validators.required),
+    });
 
-    constructor(private projectDataService: ProjectDataService) {}
+    constructor(private router: Router,
+                private route: ActivatedRoute,
+                private projectService: ProjectService,
+                private authService: AuthService) {}
 
     ngOnInit(): void {
-        this.projectDataService
-            .getProjectData()
-            .subscribe((project: Project) => {
-                this.project = project;
+        const userData = this.authService.me();
+        const projectData = this.projectService.getProjectData(this.route.snapshot.params.projectId);
+
+        forkJoin([userData, projectData]).subscribe((result: any) => {
+            this.user = result[0];
+            const project: Project = result[1];
+            if (!project) {
+                this.project = {
+                    _id: null,
+                    title: 'Project1',
+                    description: 'A new project. Add here your description.',
+                    createdAt: new Date(),
+                    managers: [this.user._id],
+                    managersData: [this.user],
+                    developersData: [],
+                    developers: []
+                };
+                return;
+            }
+            this.project = project;
+        });
+    }
+
+    assignManager(event: any): void {
+        this.project.managersData.push(event.data.userToAssign);
+        this.project.managers.push(event.data.userToAssign._id);
+    }
+
+    assignDeveloper(event: any): void {
+        this.project.developersData.push(event.data.userToAssign);
+        this.project.developers.push(event.data.userToAssign._id);
+    }
+
+    saveProject() {
+        if (this.form.invalid) {
+            Object.keys(this.form.controls)
+                .forEach(controlName => this.form.controls[controlName].markAsTouched());
+            return;
+        }
+        delete this.project.developersData;
+        delete this.project.managersData;
+        this.projectService
+            .createOrUpdateProject(this.project, this.project._id)
+            .subscribe(() => {
+                this.router.navigateByUrl('/');
             });
     }
 
-    checkManagerEmail(event: any): void {
-        console.log(event.data.email);
+    deleteProject() {
+        if (!this.project._id) { return; }
+        this.projectService
+            .deleteProject(this.project._id)
+            .subscribe(() => {
+                this.router.navigateByUrl('/');
+            });
     }
 }
