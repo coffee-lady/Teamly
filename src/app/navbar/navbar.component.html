@@ -7,13 +7,13 @@
     <div class="nav-container links">
         <a routerLink='/developers' routerLinkActive="active" class="nav__link">DEVELOPERS</a>
         <div class="dropdown">
-            <a class="nav__link">NEW</a>
-            <div class="dropdown-content" *ngIf="user.role === 'manager'">
-                <a routerLink="/projects/new" class="nav__link nav__link_with-icon">
+            <a class="nav__link" *ngIf="user.role === 'Manager'">NEW</a>
+            <div class="dropdown-content" *ngIf="user.role === 'Manager'">
+                <a routerLink="/new/project" class="nav__link nav__link_with-icon">
                     <img src="../../../../assets/icons/rocket.png">
                     <span>New project</span>
                 </a>
-                <a routerLink="/projects/tasks/new" class="nav__link nav__link_with-icon">
+                <a routerLink="/new/task" class="nav__link nav__link_with-icon">
                     <img src="../../../../assets/icons/mission.png">
                     <span>New task</span>
                 </a>

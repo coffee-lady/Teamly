@@ -150,3 +150,7 @@
 tbody td:nth-child(5n) {
   max-width: 60px;
 }
+.no-tasks {
+  width: 100%;
+  font-size: 16px;
+}

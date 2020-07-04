@@ -26,7 +26,7 @@ export class DevelopersSearchComponent implements OnInit {
                     return this.usersService.findUsers(searchStr, 'developer').pipe(catchError(err => of ([])));
                 }))
             .subscribe((developers: User[]) => {
-                this.developers = developers;
+                this.developers = developers ? developers : [];
             });
     }
 

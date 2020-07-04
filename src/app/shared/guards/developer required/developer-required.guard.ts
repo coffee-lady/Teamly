@@ -1,26 +1,22 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 import { AuthService } from '../../services/auth/auth.service';
+import { User } from '../../interfaces';
 
 @Injectable({
     providedIn: 'root'
 })
 export class DeveloperRequiredGuard implements CanActivate {
+    user: User;
+
     constructor(private router: Router, private authService: AuthService) {}
 
-    canActivate(): Observable < boolean > {
-        return this.authService
-            .getUser()
-            .pipe(
-                map(user => {
-                    if (user.role === 'developer') { return true; }
+    canActivate(): boolean {
+        this.user = this.authService.getUser();
+        if (this.user.role === 'developer') { return true; }
 
-                    this.router.navigateByUrl('/');
-                    return false;
-                })
-            );
+        this.router.navigateByUrl('/');
+        return false;
     }
 }

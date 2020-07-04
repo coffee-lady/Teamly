@@ -1,0 +1,22 @@
+<form formGroup="form" class="app-container">
+    <app-project-left-panel [managers]="project.managersData" [developers]="project.developersData"></app-project-left-panel>
+    <div class="container">
+        <div class="general-inform">
+            <div class="head">
+                <div class="title-box">
+                    <textarea formControlName="title" class="head__title">{{ project.title }}</textarea>
+                </div>
+                <div class="createdAt">Created: {{ project.createdAt | date : 'short' }}</div>
+            </div>
+
+            <textarea formControlName="description" class="description">{{ project.description }}</textarea>
+        </div>
+
+        <app-assign-input [userRole]="'manager'" [assignUserTo]="'project'" (assignUser)="assignManager($event)"></app-assign-input>
+        <app-assign-input [userRole]="'developer'" [assignUserTo]="'project'" (assignUser)="assignDeveloper($event)"></app-assign-input>
+
+        <div class="buttons">
+            <button class="buttons__save" (click)="saveProject()">Save</button>
+        </div>
+    </div>
+</form>

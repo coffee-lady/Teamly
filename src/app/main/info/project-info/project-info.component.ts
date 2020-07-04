@@ -4,7 +4,6 @@ import { ProjectService } from 'src/app/shared/services/projects/projects.servic
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { forkJoin } from 'rxjs';
 
 @Component({
     selector: 'app-project-info',
@@ -28,27 +27,12 @@ export class ProjectInfoComponent implements OnInit {
                 private authService: AuthService) {}
 
     ngOnInit(): void {
-        const userData = this.authService.me();
-        const projectData = this.projectService.getProjectData(this.route.snapshot.params.projectId);
-
-        forkJoin([userData, projectData]).subscribe((result: any) => {
-            this.user = result[0];
-            const project: Project = result[1];
-            if (!project) {
-                this.project = {
-                    _id: null,
-                    title: 'Project1',
-                    description: 'A new project. Add here your description.',
-                    createdAt: new Date(),
-                    managers: [this.user._id],
-                    managersData: [this.user],
-                    developersData: [],
-                    developers: []
-                };
-                return;
-            }
-            this.project = project;
-        });
+        this.user = this.authService.getUser();
+        this.projectService
+            .getProjectData(this.route.snapshot.params.projectId)
+            .subscribe((proj: Project) => {
+                this.project = proj;
+            });
     }
 
     assignManager(event: any): void {
@@ -70,7 +54,7 @@ export class ProjectInfoComponent implements OnInit {
         delete this.project.developersData;
         delete this.project.managersData;
         this.projectService
-            .createOrUpdateProject(this.project, this.project._id)
+            .updateProject(this.project, this.project._id)
             .subscribe(() => {
                 this.router.navigateByUrl('/');
             });

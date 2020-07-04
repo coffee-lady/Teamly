@@ -11,6 +11,9 @@
                 </tr>
             </thead>
             <tbody>
+                <div class="no-devs" *ngIf="!tasks">
+                    No available tasks found.
+                </div>
                 <tr *ngFor="let task of tasks">
                     <td class="task__title">{{ task.projectData.title }}</td>
                     <td class="task__title">{{ task.title }}</td>

@@ -9,10 +9,11 @@ import { Project } from '../../interfaces';
 export class ProjectService {
     constructor(private http: HttpClient) {}
 
-    createOrUpdateProject(projectData: Project, projectId ? : string) {
-        if (!projectId) {
-            return this.http.post(`/api/projects/new`, projectData);
-        }
+    createProject(projectData: Project) {
+        return this.http.post(`/api/new/project`, projectData);
+    }
+
+    updateProject(projectData: Project, projectId: string) {
         return this.http.post(`/api/projects/${projectId}`, projectData);
     }
 

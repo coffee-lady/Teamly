@@ -21,7 +21,7 @@ export class UsersService {
     }
 
     getDevelopersList() {
-        return this.http.get('/api/developers');
+        return this.http.get('/api/users/developers');
     }
 
     deleteDeveloper(devId: string) {

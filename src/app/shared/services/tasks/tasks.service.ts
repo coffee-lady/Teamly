@@ -13,11 +13,12 @@ export class TaskService {
         return this.http.get(`/my-tasks`, { params: { id: userId } });
     }
 
-    createOrUpdateTask(taskData: Task, projectId: string, taskId ? : string) {
-        if (!taskId) {
-            return this.http
-                .post(`/api/projects/${projectId}/tasks/new`, taskData);
-        }
+    createTask(taskData: Task, projectId: string) {
+        return this.http
+            .post(`/api/projects/${projectId}/new/task`, taskData);
+    }
+
+    updateTask(taskData: Task, projectId: string, taskId: string) {
         return this.http
             .post(`/api/projects/${projectId}/tasks/${taskId}`, taskData);
     }

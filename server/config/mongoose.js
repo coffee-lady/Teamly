@@ -13,10 +13,10 @@ client.connect(err => {
   }
 });
 
-mongoose
-  .connect(uri, {
+mongoose.connect(uri, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useCreateIndex: true
   })
   .catch(err => console.error(err));
 

@@ -9,6 +9,8 @@ import { TaskInfoComponent } from './info/task-info/task-info.component';
 import { ManagerRequiredGuard } from '../shared/guards/manager required/manager-required.guard';
 import { DeveloperRequiredGuard } from '../shared/guards/developer required/developer-required.guard';
 import { AuthGuard } from '../shared/guards';
+import { NewProjectComponent } from './new/new-project/new-project.component';
+import { NewTaskComponent } from './new/new-task/new-task.component';
 
 const routes: Routes = [{
         path: '',
@@ -16,7 +18,7 @@ const routes: Routes = [{
         canActivate: [AuthGuard],
         children: [{
             path: '',
-            redirectTo: 'projects/new',
+            redirectTo: 'developers',
             pathMatch: 'full',
         }, {
             path: 'projects/:projectId',
@@ -27,8 +29,13 @@ const routes: Routes = [{
             component: ProjectInfoComponent,
             pathMatch: 'full'
         }, {
-            path: 'projects/new',
-            component: ProjectInfoComponent,
+            path: 'new/project',
+            component: NewProjectComponent,
+            canActivate: [ManagerRequiredGuard],
+            pathMatch: 'full'
+        }, {
+            path: 'new/task',
+            component: NewTaskComponent,
             canActivate: [ManagerRequiredGuard],
             pathMatch: 'full'
         }, {
@@ -41,13 +48,8 @@ const routes: Routes = [{
             component: DevsListComponent,
             pathMatch: 'full'
         }, {
-            path: 'projects/:projectId/task/:taskId',
+            path: 'projects/:projectId/tasks/:taskId',
             component: TaskInfoComponent,
-            pathMatch: 'full'
-        }, {
-            path: 'projects/:projectId/task/new',
-            component: TaskInfoComponent,
-            canActivate: [ManagerRequiredGuard],
             pathMatch: 'full'
         }]
     },

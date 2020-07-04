@@ -20,15 +20,11 @@ export class MyTasksComponent implements OnInit {
     constructor(private authService: AuthService, private taskService: TaskService, private userService: UsersService) {}
 
     ngOnInit(): void {
-        this.authService
-            .me()
-            .pipe(
-                mergeMap((user: User) => {
-                    this.user = user;
-                    return this.taskService.getMyTasks(user._id);
-                }))
+        this.user = this.authService.getUser();
+        this.taskService
+            .getMyTasks(this.user._id)
             .subscribe((tasks: Task[]) => {
-                this.tasks = tasks;
+                this.tasks = tasks ? tasks : [];
             });
     }
 
@@ -44,7 +40,7 @@ export class MyTasksComponent implements OnInit {
         taskData.completed = true;
         delete taskData.developerData;
         delete taskData.projectData;
-        this.taskService.createOrUpdateTask(taskData, taskData.projectId, taskData._id).subscribe();
+        this.taskService.updateTask(taskData, taskData.projectId, taskData._id).subscribe();
     }
 
     removeFromMyTasks(taskId: string) {

@@ -9,28 +9,26 @@ import { ProjectService } from 'src/app/shared/services';
 @Component({
     selector: 'app-devs-list',
     templateUrl: './devs-list.component.html',
-    styleUrls: ['./devs-list.component.less']
+    styleUrls: ['./devs-list.component.less', '../../../shared/styles/table.less']
 })
 export class DevsListComponent implements OnInit {
     user: User;
-    devs: User[];
-    projects: Project[];
-    editProjects: Project[];
+    devs: User[] = [];
+    projects: Project[] = [];
+    editProjects: Project[] = [];
 
     constructor(private authService: AuthService,
                 private userService: UsersService,
                 private projectService: ProjectService) {}
 
     ngOnInit(): void {
-        const userData = this.authService.me();
+        this.user = this.authService.getUser();
         const devsData = this.userService.getDevelopersList();
         const projectsData = this.projectService.getProjects();
 
-        forkJoin([userData, devsData, projectsData]).subscribe((result: any) => {
-            this.user = result[0];
-            this.devs = result[1];
-            this.projects = result[2];
-            this.editProjects = result[2];
+        forkJoin([devsData, projectsData]).subscribe((result: any) => {
+            this.devs = result[0];
+            this.projects = this.editProjects = result[1];
         });
 
         for (const input of document.querySelectorAll('.searchEditInput')) {
@@ -71,7 +69,7 @@ export class DevsListComponent implements OnInit {
         devData.projectsData.push(projData);
 
         const updateDev = this.userService.updateDeveloper(devData);
-        const updateProj = this.projectService.createOrUpdateProject(projData);
+        const updateProj = this.projectService.updateProject(projData, projData._id);
         forkJoin([updateDev, updateProj]).subscribe();
     }
 
@@ -84,7 +82,7 @@ export class DevsListComponent implements OnInit {
         devData.projectsData.splice(devData.projectsData.indexOf(projData), 1);
 
         const updateDev = this.userService.updateDeveloper(devData);
-        const updateProj = this.projectService.createOrUpdateProject(projData);
+        const updateProj = this.projectService.updateProject(projData, projData._id);
         forkJoin([updateDev, updateProj]).subscribe();
     }
 

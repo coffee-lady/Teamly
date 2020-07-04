@@ -11,6 +11,7 @@ function handleError(err, res) {
 
 module.exports.createTask = async function (req, res) {
     let data = req.body;
+    delete data._id;
     let task = new Task(data);
     await Project.findByIdAndUpdate(data.projectId, {
         $push: {
@@ -107,9 +108,11 @@ module.exports.getMyTasks = function (req, res) {
         .findById(req.query.id)
         .exec(async (err, user) => {
             if (err) return handleError(err, res);
+            if (!user.currentTasks) return res.status(200).json(null);
 
             let tasks = [];
             for (let taskId of user.currentTasks) {
+
                 await Task.findById(taskId).exec((err, task) => {
                     if (err) return handleError(err, res);
                     tasks.push(task);

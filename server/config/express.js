@@ -7,6 +7,9 @@ const logger = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
 
+require('./passport');
+require('./mongoose');
+
 const routes = require('../routes/index.route');
 const passport = require('passport');
 

@@ -3,6 +3,9 @@
         <input class="search__input" type="text" name="projectsSearch" placeholder="Search projects...">
     </form>
     <div class="results">
+        <div class="no-projects" *ngIf="!projects">
+            No projects found.
+        </div>
         <a class="result" *ngFor="let project of projects" href="project._id" (click)="linkOnClick(project._id)">
             <span class="result__title">{{ project.title }}</span>
             <div class="result__createdAt">

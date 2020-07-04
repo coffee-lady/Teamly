@@ -1,24 +1,31 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { throwError } from 'rxjs';
+import { Task, Project, User } from 'src/app/shared/interfaces';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { User, Task, Project } from 'src/app/shared/interfaces';
-import { throwError, Subject, forkJoin } from 'rxjs';
+import { dueDateValidator } from 'src/app/shared/validators';
+import { Router } from '@angular/router';
+import { UsersService, TaskService, ProjectService, DateService } from 'src/app/shared/services';
+import { HttpErrorResponse } from '@angular/common/http';
 import { map, mergeMap, takeUntil } from 'rxjs/operators';
 
-import { dueDateValidator } from 'src/app/shared/validators';
-import { UsersService, TaskService, ProjectService, DateService } from 'src/app/shared/services';
-
 @Component({
-    selector: 'app-task-info',
-    templateUrl: './task-info.component.html',
-    styleUrls: ['./task-info.component.less', '../../../shared/styles/info.less']
+    selector: 'app-new-task',
+    templateUrl: './new-task.component.html',
+    styleUrls: ['./new-task.component.less', '../../../shared/styles/info.less']
 })
-export class TaskInfoComponent implements OnInit, OnDestroy {
-    private readonly onDestroy = new Subject < void > ();
-
-    task: Task;
+export class NewTaskComponent implements OnInit {
+    task: Task = {
+        _id: '',
+        title: 'Task1',
+        description: 'A new task. Add here your description.',
+        createdAt: new Date(),
+        dueDate: null,
+        completed: false,
+        projectId: null,
+        takenByDev: null
+    };
     projects: Project[];
+    isNew = true;
 
     form: FormGroup = new FormGroup({
         title: new FormControl('', Validators.required),
@@ -49,20 +56,10 @@ export class TaskInfoComponent implements OnInit, OnDestroy {
                 private dateService: DateService) {}
 
     ngOnInit(): void {
-        const taskData = this.taskService.getTaskData();
-        const projectsData = this.projectService.getProjects();
-
-        forkJoin([taskData, projectsData]).subscribe((result: any) => {
-            const task = result[0];
-            this.task = task;
-            this.dueDateString = this.dateService.formatDateToString(task.dueDate);
-
-            this.projects = result[1];
-        });
-    }
-
-    ngOnDestroy() {
-        this.onDestroy.next();
+        this.projectService
+            .getProjects().subscribe((projects: Project[]) => {
+                this.projects = projects;
+            });
     }
 
     private handleError(error: HttpErrorResponse) {
@@ -84,14 +81,7 @@ export class TaskInfoComponent implements OnInit, OnDestroy {
     assignDeveloper(event: any): void {
         this.task.takenByDev = event.data.userToAssign._id;
         this.usersService
-            .findUserById(this.task.takenByDev).pipe(
-                map((dev: User) => {
-                    dev.currentTasks.find(taskId => dev.currentTasks.push(taskId));
-                    return dev;
-                }),
-                mergeMap(dev => this.usersService.updateDeveloper(dev)),
-                takeUntil(this.onDestroy)
-            )
+            .findUserById(this.task.takenByDev)
             .subscribe((dev: User) => {
                 this.task.developerData = dev;
             });
@@ -110,7 +100,10 @@ export class TaskInfoComponent implements OnInit, OnDestroy {
                     return dev;
                 }),
                 mergeMap(dev => this.usersService.updateDeveloper(dev)))
-            .subscribe();
+            .subscribe(() => {
+                this.task.takenByDev = null;
+                this.task.developerData = null;
+            });
     }
 
     saveTask() {
@@ -122,29 +115,8 @@ export class TaskInfoComponent implements OnInit, OnDestroy {
         this.task.title = this.title;
         this.task.description = this.description;
         delete this.task.developerData;
-        if (this.task.takenByDev) {
-            this.usersService
-                .findUserById(this.task.takenByDev).pipe(
-                    map((dev: User) => {
-                        dev.currentTasks.find(taskId => dev.currentTasks.push(taskId));
-                        return dev;
-                    }),
-                    mergeMap(dev => this.usersService.updateDeveloper(dev)),
-                    takeUntil(this.onDestroy)
-                )
-                .subscribe();
-        }
         this.taskService
-            .updateTask(this.task, this.task.projectId, this.task._id)
-            .subscribe(() => {
-                this.router.navigateByUrl('/');
-            });
-    }
-
-    deleteTask() {
-        if (!this.task._id || !this.task.projectId) { return; }
-        this.taskService
-            .deleteTask(this.task.projectId, this.task._id)
+            .createTask(this.task, this.task.projectId)
             .subscribe(() => {
                 this.router.navigateByUrl('/');
             });

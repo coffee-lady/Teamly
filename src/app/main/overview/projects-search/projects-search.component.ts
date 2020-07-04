@@ -23,10 +23,12 @@ export class ProjectsSearchComponent implements OnInit {
                 filter(value => value.length > 2),
                 distinctUntilChanged(),
                 switchMap(searchStr => {
-                    return this.projectService.findProject(searchStr).pipe(catchError(err => of ([])));
+                    return this.projectService
+                    .findProject(searchStr)
+                    .pipe(catchError(err => of ([])));
                 }))
             .subscribe((projects: Project[]) => {
-                this.projects = projects;
+                this.projects = projects ? projects : [];
             });
     }
 

@@ -14,6 +14,7 @@ module.exports.getDevelopers = function(req, res) {
             role: 'Developer'
         }, async (err, devs) => {
             if (err) return handleError(err, res);
+            if (!devs) res.status(200).json(null);
 
             for (let dev of devs) {
                 delete dev.hashedPassword;
@@ -31,6 +32,7 @@ module.exports.getDevelopers = function(req, res) {
 module.exports.findUsers = function(req, res) {
     let searchStr = req.body.searchString;
     let userRole = req.body.role;
+
     User
         .find({
             $or: [
@@ -41,8 +43,9 @@ module.exports.findUsers = function(req, res) {
         })
         .exec((err, users) => {
             if (err) return handleError(err, res);
+            if (!users) return res.status(200).json(null);;
 
-            res.status(201).json(users);
+            res.status(200).json(users);
         });
 };
 

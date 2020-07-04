@@ -18,7 +18,7 @@ interface AuthResponse {
     providedIn: 'root'
 })
 export class AuthService {
-    private user$ = new BehaviorSubject < User | null > (null);
+    private user$: User | null = null;
 
     constructor(private router: Router, private http: HttpClient, private tokenStorage: TokenStorage) {}
 
@@ -38,17 +38,18 @@ export class AuthService {
                 .post('/api/auth/register', { fullname, email, password, role }, { observe: 'response' })
                 .pipe(map((response: HttpResponse < { user: User, token: string } > ) => {
                     this.setUser(response.body.user);
+
                     this.tokenStorage.saveToken(response.body.token);
                     return response;
                 }));
         }
 
     setUser(user: User | null): void {
-        this.user$.next(user);
+        this.user$ = user;
     }
 
-    getUser(): Observable < User | null > {
-        return this.user$.asObservable();
+    getUser(): User | null {
+        return this.user$;
     }
 
     me(): Observable < User > {

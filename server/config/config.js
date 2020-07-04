@@ -17,7 +17,6 @@ const envVarsSchema = Joi.object({
     .required();
 
 const { error, value: envVars } = Joi.validate(process.env, envVarsSchema);
-console.log(process.env.SERVER_PORT);
 
 if (error) {
     throw new Error(`Config validation error: ${error.message}`);

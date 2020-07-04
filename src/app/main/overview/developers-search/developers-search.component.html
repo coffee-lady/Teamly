@@ -3,6 +3,9 @@
         <input id="searchInput" class="search__input" type="text" name="projectsSearch" placeholder="Search developers...">
     </form>
     <div class="results">
+        <div class="no-devs" *ngIf="!developers">
+            No available tasks found.
+        </div>
         <a class="result" *ngFor="let dev of developers" href="dev._id" (click)="linkOnClick(dev._id)">
             <div class="result__fullname">{{ dev.fullname }}</div>
             <div class="result__email">{{ dev.email }}</div>

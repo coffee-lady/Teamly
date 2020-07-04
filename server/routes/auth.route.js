@@ -19,7 +19,7 @@ function register(req, res, next) {
 }
 
 function login(req, res) {
-    let user = req.user;
+    let user = req.user;    
     if (!user) {
         return res.status(400).json({ message: 'Incorrect email' });
     }

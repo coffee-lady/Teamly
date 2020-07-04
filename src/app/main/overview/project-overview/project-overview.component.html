@@ -39,7 +39,7 @@
                     <th scope="col">Due Date</th>
                     <th scope="col">
                         <div class="th-button" *ngIf="user.role==='manager'">
-                            <a [routerLink]="'/projects/'+project._id+'/tasks/new'" class="add-task-button" type="submit">
+                            <a routerLink="/new/task" class="add-task-button" type="submit">
                                 <img src="../../../../assets/icons/add_black.png">
                             </a>
                         </div>
@@ -47,6 +47,9 @@
                 </tr>
             </thead>
             <tbody>
+                <div class="no-devs" *ngIf="!project.tasksData">
+                    No available tasks found.
+                </div>
                 <tr *ngFor="let task of project.tasksData">
                     <td class="task__title">{{ task.title }}</td>
                     <td class="task__description">{{ task.description }}</td>

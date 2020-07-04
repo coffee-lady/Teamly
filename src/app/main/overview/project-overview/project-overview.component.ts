@@ -15,20 +15,19 @@ export class ProjectOverviewComponent implements OnInit {
     project: Project;
 
     constructor(private route: ActivatedRoute,
-        private router: Router,
-        private userService: UsersService,
-        private projectService: ProjectService,
-        private taskService: TaskService,
-        private authService: AuthService) {}
+                private router: Router,
+                private userService: UsersService,
+                private projectService: ProjectService,
+                private taskService: TaskService,
+                private authService: AuthService) {}
 
     ngOnInit(): void {
-        const userData = this.authService.me();
-        const projectData = this.projectService.getProjectData(this.projectId);
-
-        forkJoin([userData, projectData]).subscribe((result: any) => {
-            this.user = result[0];
-            this.project = result[1];
-        });
+        this.user = this.authService.getUser();
+        this.projectService
+            .getProjectData(this.projectId)
+            .subscribe((project: Project) => {
+                this.project = project;
+            });
     }
 
     scrollToProject(event: any) {
@@ -56,7 +55,7 @@ export class ProjectOverviewComponent implements OnInit {
             task.completed = (task._id === taskId) ? true : task.completed;
             if (task._id === taskId) { return true; }
         });
-        this.taskService.createOrUpdateTask(taskData, this.projectId, taskData._id).subscribe();
+        this.taskService.updateTask(taskData, this.projectId, taskData._id).subscribe();
     }
 
     editTask(taskId: string) {

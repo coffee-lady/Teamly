@@ -1,0 +1,40 @@
+.app-container {
+  display: grid;
+  grid-template-columns: 8fr 3fr;
+}
+@media only screen and (max-width: 1440px) {
+  .app-container {
+    grid-template-columns: 8fr 4fr;
+  }
+}
+.left-panel {
+  height: calc(100vh - 70px);
+  overflow: auto;
+  color: #ffffff;
+  background: #3282B8;
+}
+.left-panel .block__title {
+  padding: 1em 20px;
+  font-size: 26px;
+}
+.left-panel .block__user {
+  display: grid;
+  grid-template-columns: 5fr 5fr 1fr;
+  padding: 1em 20px;
+  background: rgba(244, 165, 72, 0.95);
+}
+.left-panel .block__dueDate {
+  padding: 0 20px;
+}
+.left-panel .block__dueDate input {
+  padding: 0.5em 1.5em;
+  width: 270px;
+  border-radius: 10px;
+  transition: all 0.2s ease-in-out;
+}
+.left-panel .block__dueDate input::placeholder {
+  color: rgba(0, 0, 0, 0.8);
+}
+.left-panel .block__dueDate input:focus {
+  box-shadow: 0 0 0 2.5px rgba(244, 165, 72, 0.95);
+}

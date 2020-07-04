@@ -3,7 +3,7 @@ const Task = require('../models/task.model');
 const Project = require('../models/project.model');
 
 function handleError(err, res) {
-    res.status(err.status).json({
+    res.status(400).json({
         message: err.message
     });
     return console.error(err);
@@ -11,14 +11,9 @@ function handleError(err, res) {
 
 module.exports.createProject = function(req, res) {
     let data = req.body;
+    delete data._id;
     Project
-        .create({
-            title: data.title,
-            description: data.description,
-            managers: data.managers,
-            developers: data.developers,
-            tasks: []
-        })
+        .create(data)
         .then(project => {
             for (let userId of data.developers.concat(data.managers)) {
                 User
@@ -37,6 +32,7 @@ module.exports.findProject = function(req, res) {
         })
         .exec((err, projects) => {
             if (err) return handleError(err, res);
+            if (!projects) return res.status(201).json(null);
 
             res.status(201).json(projects);
         });
@@ -57,41 +53,49 @@ module.exports.getProjectData = function(req, res) {
     Project
         .findById(req.params.projectId)
         .exec(async (err, project) => {
-            if (err) return handleError(err, res);
+            try {
+                if (err) {
+                    handleError(err, res);
+                    return;
+                };
+                if (!project) return res.status(200).json({});
 
-            let managersData = [],
-                developersData = [],
-                tasksData = [];
-            for (let userId of project.managers.concat(project.developers)) {
-                await User
-                    .findById(userId)
-                    .exec((err, user) => {
-                        if (err) return handleError(err, res);
+                let managersData = [],
+                    developersData = [],
+                    tasksData = [];
+                for (let userId of project.managers.concat(project.developers)) {
+                    await User
+                        .findById(userId)
+                        .exec((err, user) => {
+                            if (err) return handleError(err, res);
 
-                        if (user.role === 'manager') {
-                            managersData.push(user);
-                        } else {
-                            developersData.push(user);
-                        }
-                    });
+                            if (user.role === 'manager') {
+                                managersData.push(user);
+                            } else {
+                                developersData.push(user);
+                            }
+                        });
+                }
+                for (let taskId of project.tasks) {
+                    await Task
+                        .findById(taskId)
+                        .exec((err, task) => {
+                            if (err) return handleError(err, res);
+
+                            tasksData.push(task);
+                        })
+                }
+                res.status(200).json({
+                    title: project.title,
+                    description: project.description,
+                    createdAt: project.createdAt,
+                    managersData: managersData,
+                    developersData: developersData,
+                    tasksData: tasksData
+                });
+            } catch (err) {
+                handleError(err, res);
             }
-            for (let taskId of project.tasks) {
-                await Task
-                    .findById(taskId)
-                    .exec((err, task) => {
-                        if (err) return handleError(err, res);
-
-                        tasksData.push(task);
-                    })
-            }
-            res.status(200).json({
-                title: project.title,
-                description: project.description,
-                createdAt: project.createdAt,
-                managersData: managersData,
-                developersData: developersData,
-                tasksData: tasksData
-            });
         });
 };
 
@@ -113,12 +117,12 @@ module.exports.deleteProject = function(req, res) {
     });
 };
 
-
 module.exports.getAllProjects = function(req, res) {
     Project
         .find()
         .exec((err, projects) => {
             if (err) return handleError(err, res);
+            if (!projects) return res.status(201).json(null);
 
             res.status(200).json(projects);
         })

@@ -1,12 +1,15 @@
 <div class="app-container">
     <app-developers-search (goToUser)="scrollToUser($event)"></app-developers-search>
     <div class="container">
-        <table class="table table-borderless">
+        <div class="no-devs" *ngIf="!devs.length">
+            No developers found.
+        </div>
+        <table class="table table-borderless"  *ngIf="devs.length">
             <thead>
                 <tr>
-                    <th scope="col">Task</th>s
-                    <th scope="col">Description</th>
-                    <th scope="col">Due Date</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Current projects</th>
                 </tr>
             </thead>
             <tbody>

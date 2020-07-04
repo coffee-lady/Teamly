@@ -1,11 +1,11 @@
 <form formGroup="form" class="app-container">
     <div class="left-panel">
-        <div class="block" [ngSwitch]="task.takenByDev">
+        <div class="block" [ngSwitch]="isNew">
             <div class="block__title">Task for project...</div>
-            <ng-template ngSwitchCase="">
+            <ng-template ngSwitchCase="true">
                 <app-dropdown-menu title="project" [dataToSelect]="projects" (elemChoosed)="chooseProject($event)"></app-dropdown-menu>
             </ng-template>
-            <ng-template ngSwitchDefault>
+            <ng-template ngSwitchCase="false">
                 <div class="block__user">
                     <div>{{ task.projectData.title }}</div>
                     <div>{{ task.projectData.description }}</div>
@@ -46,7 +46,6 @@
         <app-assign-input [userRole]="'developer'" [assignUserTo]="'task'" (assignUser)="assignDeveloper($event)"></app-assign-input>
 
         <div class="buttons">
-            <button class="buttons__delete" (click)="deleteTask()">Delete</button>
             <button class="buttons__save" (click)="saveTask()">Save</button>
         </div>
     </div>
