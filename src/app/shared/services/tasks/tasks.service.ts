@@ -15,7 +15,7 @@ export class TaskService {
 
     createTask(taskData: Task, projectId: string) {
         return this.http
-            .post(`/api/projects/${projectId}/new/task`, taskData);
+            .post(`/api/projects/${projectId}/tasks/new`, taskData);
     }
 
     updateTask(taskData: Task, projectId: string, taskId: string) {
@@ -28,8 +28,8 @@ export class TaskService {
             .delete(`/api/projects/${projectId}/tasks/${taskId}`);
     }
 
-    getTaskData() {
+    getTaskData(taskId: string) {
         return this.http
-            .get('/api/projects/:projectId/tasks/:taskId');
+            .get(`/api/projects/:projectId/tasks/${taskId}`);
     }
 }

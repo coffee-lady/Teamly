@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpResponse } from '@angular/common/http';
 
 import { BehaviorSubject, Observable } from 'rxjs';
-import { tap, pluck, map, mergeMap } from 'rxjs/operators';
+import { tap, pluck, map, mergeMap, catchError } from 'rxjs/operators';
 
 import { TokenStorage } from './token.storage';
 import { User } from '../../interfaces';
@@ -22,12 +22,14 @@ export class AuthService {
 
     constructor(private router: Router, private http: HttpClient, private tokenStorage: TokenStorage) {}
 
-    login(email: string, password: string): Observable < HttpResponse < { user: User, token: string } > > {
+    login(email: string, password: string): Observable < HttpResponse < { user ?: User, token ?: string } > > {
         return this.http
             .post('/api/auth/login', { email, password }, { observe: 'response' })
-            .pipe(map((response: HttpResponse < { user: User, token: string } > ) => {
-                this.setUser(response.body.user);
-                this.tokenStorage.saveToken(response.body.token);
+            .pipe(map((response: HttpResponse < { user ?: User, token ?: string } > ) => {
+                if (response.body.token) {
+                    this.setUser(response.body.user);
+                    this.tokenStorage.saveToken(response.body.token);
+                }
                 return response;
             }));
     }
@@ -52,19 +54,6 @@ export class AuthService {
         return this.user$;
     }
 
-    me(): Observable < User > {
-        const token: string | null = this.tokenStorage.getToken();
-
-        if (token === null) {
-            return null;
-        }
-
-        return this.http.get < AuthResponse > ('/api/auth/me').pipe(
-            tap(({ user }) => this.setUser(user)),
-            pluck('user')
-        );
-    }
-
     signOut(): void {
         this.tokenStorage.signOut();
         this.setUser(null);
@@ -73,9 +62,5 @@ export class AuthService {
     getAuthorizationHeaders() {
         const token: string | null = this.tokenStorage.getToken() || '';
         return { Authorization: `Bearer ${token}` };
-    }
-
-    checkTheUserOnTheFirstLoad(): Promise < User > {
-        return this.me().toPromise();
     }
 }

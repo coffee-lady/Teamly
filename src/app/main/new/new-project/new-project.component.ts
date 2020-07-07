@@ -19,7 +19,6 @@ export class NewProjectComponent implements OnInit {
     });
 
     constructor(private router: Router,
-                private route: ActivatedRoute,
                 private projectService: ProjectService,
                 private authService: AuthService) {}
 
@@ -35,16 +34,38 @@ export class NewProjectComponent implements OnInit {
             developersData: [],
             developers: []
         };
+        this.form.controls.title.setValue(this.project.title);
+        this.form.controls.description.setValue(this.project.description);
     }
 
-    assignManager(event: any): void {
-        this.project.managersData.push(event.userToAssign);
-        this.project.managers.push(event.userToAssign._id);
+    get title() {
+        return this.form.get('title').value;
     }
 
-    assignDeveloper(event: any): void {
-        this.project.developersData.push(event.userToAssign);
-        this.project.developers.push(event.userToAssign._id);
+    get description() {
+        return this.form.get('description').value;
+    }
+
+    assignManager(user: any): void {
+        if (this.project.managersData.find(manager => manager._id === user._id)) { return; }
+        this.project.managersData.push(user);
+        this.project.managers.push(user._id);
+    }
+
+    assignDeveloper(user: User): void {
+        if (this.project.developersData.find(dev => dev._id === user._id)) { return; }
+        this.project.developersData.push(user);
+        this.project.developers.push(user._id);
+    }
+
+    changeManagers(data: [User[], string[]]) {
+        this.project.managersData = data[0];
+        this.project.managers = data[1];
+    }
+
+    changeDevelopers(data: [User[], string[]]) {
+        this.project.developersData = data[0];
+        this.project.developers = data[1];
     }
 
     saveProject() {
@@ -55,6 +76,8 @@ export class NewProjectComponent implements OnInit {
         }
         delete this.project.developersData;
         delete this.project.managersData;
+        this.project.title = this.title;
+        this.project.description = this.description;
         this.projectService
             .createProject(this.project)
             .subscribe(() => {

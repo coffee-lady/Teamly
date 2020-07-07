@@ -1,4 +1,23 @@
 <div class="app-container">
-    <app-users-list [title]="'Manages'" [users]="managers"></app-users-list>
-    <app-users-list [title]="'Developers'" [users]="developers"></app-users-list>
+    <div class="title">Managers</div>
+    <div class="list">
+        <div class="user" *ngFor="let manager of managersData">
+            <div>{{ manager.fullname }}</div>
+            <div> {{ manager.email }} </div>
+            <button type="submit" (click)="removeManager(manager._id)">
+                <img src="../../../../assets/icons/cross_white.png">
+            </button>
+        </div>
+    </div>
+
+    <div class="title">Developers</div>
+    <div class="list">
+        <div class="user" *ngFor="let dev of developersData">
+            <div>{{ dev.fullname }}</div>
+            <div> {{ dev.email }} </div>
+            <button type="submit" (click)="removeDeveloper(dev._id)">
+                <img src="../../../../assets/icons/cross_white.png">
+            </button>
+        </div>
+    </div>
 </div>

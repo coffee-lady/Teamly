@@ -4,6 +4,9 @@
   padding: 3em 5em;
   box-sizing: border-box;
 }
+textarea {
+  resize: none;
+}
 .general-inform {
   max-width: 800px;
 }
@@ -15,19 +18,18 @@
   box-sizing: border-box;
 }
 .head__title {
-  display: flex;
-  align-items: center;
+  display: block;
   font-size: 50px;
+  line-height: 1;
   font-family: 'Galdeano', sans-serif;
 }
 .createdAt {
   color: #36495E;
 }
 .description {
+  display: block;
   width: 100%;
   box-sizing: border-box;
-  padding: 2em 0;
-  line-height: 29px;
 }
 .buttons {
   margin-top: 1em;
@@ -47,6 +49,21 @@
   background: #D92027;
 }
 .buttons__save {
-  margin-left: 2em;
   background: #0C9463;
+}
+.title-box,
+.description-box {
+  position: relative;
+  margin: 1em 0;
+}
+input.ng-touched.ng-invalid {
+  box-shadow: 0 0 0 1px #b40000;
+}
+textarea.ng-touched.ng-invalid {
+  box-shadow: 0 0 0 1px #b40000;
+}
+.invalid-form-alert {
+  position: absolute;
+  padding: 0.2em 0;
+  color: #b40000;
 }

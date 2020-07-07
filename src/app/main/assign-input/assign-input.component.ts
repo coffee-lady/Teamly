@@ -1,9 +1,7 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
-import { FormGroup, FormControl, Validators, Form } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { EventEmitter } from '@angular/core';
 import { UsersService } from 'src/app/shared/services/users/users.service';
-import { fromEvent, from } from 'rxjs';
-import { debounceTime, map, filter, distinctUntilChanged, mergeMap } from 'rxjs/operators';
 import { User } from 'src/app/shared/interfaces';
 
 @Component({
@@ -20,46 +18,33 @@ export class AssignInputComponent implements OnInit {
     @Output() assignUser: EventEmitter < User > = new EventEmitter();
 
     placeholder: string;
-    form: FormGroup;
-    emailIncorrect = false;
     userToAssign: User;
+    form: FormGroup = new FormGroup({
+        email: new FormControl('', [
+            Validators.email
+        ])
+    });
 
     ngOnInit(): void {
-        this.form = new FormGroup({
-            email: new FormControl('', [
-                Validators.required,
-                Validators.email
-            ])
-        });
-        this.placeholder = `${this.userRole}@example.com`;
-
-
-        fromEvent(document.getElementById('input'), 'input').pipe(
-            debounceTime(700),
-            map(event => (event.target as HTMLInputElement).value),
-            filter(email => email.length > 3),
-            distinctUntilChanged(),
-            mergeMap(email => this.usersService.findUsers(this.email, this.userRole))
-        ).subscribe({
-            next: (users: User[]) => {
-                if (!users || users.length > 1) {
-                    this.emailIncorrect = true;
-                    return;
-                }
-                this.emailIncorrect = false;
-                this.userToAssign = users[0];
-            },
-            error: console.error
-        });
+        this.placeholder = `${this.userRole.toLowerCase()}@example.com`;
     }
-
     get email() {
         return this.form.get('email').value;
     }
 
     submit() {
-        if (!this.emailIncorrect && this.userToAssign) {
-            this.assignUser.emit(this.userToAssign);
+        if (this.form.valid) {
+            this.usersService
+                .findUsers(this.email, this.userRole)
+                .subscribe((users: User[]) => {
+                        if (users.length > 1) {
+                            this.form.controls.email.setErrors({ invalidEmail: true });
+                            return;
+                        }
+                        this.userToAssign = users[0];
+                        this.assignUser.emit(this.userToAssign);
+                    },
+                    () => this.form.controls.email.setErrors({ invalidEmail: true }));
         }
     }
 }

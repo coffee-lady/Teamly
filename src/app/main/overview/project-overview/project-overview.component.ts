@@ -3,6 +3,7 @@ import { User, Project } from 'src/app/shared/interfaces';
 import { ProjectService, AuthService, UsersService, TaskService } from 'src/app/shared/services';
 import { forkJoin } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map, mergeMap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-project-overview',
@@ -10,9 +11,10 @@ import { ActivatedRoute, Router } from '@angular/router';
     styleUrls: ['./project-overview.component.less', '../../../shared/styles/table.less']
 })
 export class ProjectOverviewComponent implements OnInit {
-    private projectId = this.route.snapshot.params.projectId;
+    projectId: string;
     user: User;
     project: Project;
+    lastProjectId: string;
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -24,17 +26,26 @@ export class ProjectOverviewComponent implements OnInit {
     ngOnInit(): void {
         this.user = this.authService.getUser();
         this.projectService
-            .getProjectData(this.projectId)
+            .getProjects()
+            .pipe(
+                map((projects: Project[]) =>
+                    this.lastProjectId = projects[projects.length - 1]._id ? projects[projects.length - 1]._id : null),
+                mergeMap(() => this.route.paramMap),
+                map(paramMap => {
+                    this.projectId = paramMap.get('projectId');
+                    if (!this.projectId && this.lastProjectId) {
+                        this.router.navigateByUrl(`/projects/${this.lastProjectId}`);
+                    }
+                    return paramMap.get('projectId');
+                }),
+                mergeMap((projectId: string) => this.projectService.getProjectData(projectId)))
             .subscribe((project: Project) => {
                 this.project = project;
-            });
+            }, (err) => { if (err) { console.error(err); } });
     }
 
-    scrollToProject(event: any) {
-        const id = event.data.devId;
-        const devTr = document.querySelector(`tr[[id]="${id}"]`);
-        const yCoord = devTr.getBoundingClientRect().top + pageYOffset;
-        document.documentElement.scrollTo(0, yCoord);
+    goToProject(projectId: string) {
+        this.router.navigateByUrl(`/projects/${projectId}`);
     }
 
     takeTheTask(taskId: string): void {

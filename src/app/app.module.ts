@@ -8,6 +8,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
 import { AuthModule } from './auth/auth.module';
 import { MainModule } from './main/main.module';
+import { UserValidator } from './shared/validators/user-existing.validator';
+import { UsersService } from './shared/services';
 
 @NgModule({
     declarations: [
@@ -20,10 +22,12 @@ import { MainModule } from './main/main.module';
         AppRoutingModule,
     ],
     providers: [{
-        provide: HTTP_INTERCEPTORS,
-        useClass: AuthInterceptor,
-        multi: true
-    }],
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true
+        },
+        UsersService,
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -1,6 +1,6 @@
-<form formGroup="form" class="app-container">
+<form formGroup="form" class="app-container" *ngIf="task">
     <div class="left-panel">
-        <div class="block" [ngSwitch]="task.takenByDev">
+        <div class="block" [ngSwitch]="task.projectId">
             <div class="block__title">Task for project...</div>
             <ng-template ngSwitchCase="">
                 <app-dropdown-menu title="project" [dataToSelect]="projects" (elemChoosed)="chooseProject($event)"></app-dropdown-menu>
@@ -23,7 +23,7 @@
         </div>
         <div class="block">
             <div class="block__title">Task for developer...</div>
-            <div class="block__user" *ngIf="task.takenByDev">
+            <div class="block__user" *ngIf="task.takenByDev && task.developerData">
                 <div>{{task.developerData.fullname}}</div>
                 <div>{{task.developerData.email}}</div>
                 <button class="user__remove-button" type="submit" (click)="removeDeveloper()">
@@ -43,7 +43,7 @@
             <textarea formControlName="description" class="description" [(ngModel)]="task.description"></textarea>
         </div>
 
-        <app-assign-input [userRole]="'developer'" [assignUserTo]="'task'" (assignUser)="assignDeveloper($event)"></app-assign-input>
+        <app-assign-input [userRole]="'Developer'" [assignUserTo]="'task'" (assignUser)="assignDeveloper($event)"></app-assign-input>
 
         <div class="buttons">
             <button class="buttons__delete" (click)="deleteTask()">Delete</button>

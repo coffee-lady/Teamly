@@ -1,22 +1,33 @@
-<form formGroup="form" class="app-container">
-    <app-project-left-panel [managers]="project.managersData" [developers]="project.developersData"></app-project-left-panel>
+<form [formGroup]="form" class="app-container">
     <div class="container">
         <div class="general-inform">
             <div class="head">
                 <div class="title-box">
-                    <textarea formControlName="title" class="head__title">{{ project.title }}</textarea>
+                    <textarea class="head__title" formControlName="title">{{ project.title }}</textarea>
+                    <div class="invalid-form-alert" *ngIf="form.controls['title'].hasError('required') && 
+                    (form.controls['title'].dirty || form.controls['title'].touched)">
+                        Required field
+                    </div>
                 </div>
-                <div class="createdAt">Created: {{ project.createdAt | date : 'short' }}</div>
+                <div class="createdAt">Created: {{ project.createdAt | date : 'shortDate' }}</div>
             </div>
 
-            <textarea formControlName="description" class="description">{{ project.description }}</textarea>
+            <div class="description-box">
+                <textarea class="description" formControlName="description">{{ project.description }}</textarea>
+                <div class="invalid-form-alert" *ngIf="form.controls['description'].hasError('required') && 
+                (form.controls['description'].dirty || form.controls['description'].touched)">
+                    Required field
+                </div>
+            </div>
+
         </div>
 
-        <app-assign-input [userRole]="'manager'" [assignUserTo]="'project'" (assignUser)="assignManager($event)"></app-assign-input>
-        <app-assign-input [userRole]="'developer'" [assignUserTo]="'project'" (assignUser)="assignDeveloper($event)"></app-assign-input>
+        <app-assign-input [userRole]="'Manager'" [assignUserTo]="'project'" (assignUser)="assignManager($event)"></app-assign-input>
+        <app-assign-input [userRole]="'Developer'" [assignUserTo]="'project'" (assignUser)="assignDeveloper($event)"></app-assign-input>
 
         <div class="buttons">
             <button class="buttons__save" (click)="saveProject()">Save</button>
         </div>
     </div>
+    <app-project-left-panel [managersData]="project.managersData" [developersData]="project.developersData" [managersIds]="project.managers" [developersIds]="project.developers" (changeDevelopers)="changeDevelopers($event)" (changeManagers)="changeManagers($event)"></app-project-left-panel>
 </form>

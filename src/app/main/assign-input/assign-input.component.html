@@ -1,8 +1,14 @@
 <div class="app-container">
     <div class="assign__title">Assign the {{ userRole }} to the {{ assignUserTo }}</div>
-    <form class="assign__form" formGroup="form" novalidate (ngSubmit)="submit()">
-        <input id="input" class="assign__input" formControlName="email" ([ngModel])="email" type="text" [placeholder]="placeholder">
-        <button class="assign__button" type="submit">
+    <form class="assign__form" [formGroup]="form" novalidate (ngSubmit)="submit()">
+        <div class="box">
+            <input id="input" class="assign__input" formControlName="email" type="text" [placeholder]="placeholder">
+            <div class="invalid-form-alert" *ngIf="form.controls['email'].hasError('invalidEmail') && 
+                    (form.controls['email'].dirty || form.controls['email'].touched)">
+                Invalid email
+            </div>
+        </div>
+        <button class="assign__button" type="submit" [disabled]="!this.form.valid">
             <img src="../../../../assets/icons/add.png">
         </button>
     </form>

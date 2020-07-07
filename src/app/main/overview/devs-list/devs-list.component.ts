@@ -18,8 +18,8 @@ export class DevsListComponent implements OnInit {
     editProjects: Project[] = [];
 
     constructor(private authService: AuthService,
-                private userService: UsersService,
-                private projectService: ProjectService) {}
+        private userService: UsersService,
+        private projectService: ProjectService) {}
 
     ngOnInit(): void {
         this.user = this.authService.getUser();
@@ -53,11 +53,18 @@ export class DevsListComponent implements OnInit {
         }
     }
 
-    scrollToUser(event: any) {
-        const id = event.data.devId;
-        const devTr = document.querySelector(`tr[[id]="${id}"]`);
-        const yCoord = devTr.getBoundingClientRect().top + pageYOffset;
-        document.documentElement.scrollTo(0, yCoord);
+    formatProjectsTitles(projects: Project[]): string {
+        const projectsTitles: string[] = [];
+        for (const project of projects) {
+            projectsTitles.push(project.title);
+        }
+        return projectsTitles.join(', ');
+    }
+
+    scrollToUser(id: string) {
+        const table: HTMLElement = document.querySelector('.table');
+        const devTr: HTMLElement = document.querySelector(`tr[id="${id}"]`);
+        table.scrollTop = devTr.offsetTop;
     }
 
     assignDevToProject(devId: string, projectId: string) {
@@ -73,7 +80,32 @@ export class DevsListComponent implements OnInit {
         forkJoin([updateDev, updateProj]).subscribe();
     }
 
+    editDev(dev: User) {
+        const div = document.createElement('div');
+        div.innerHTML = `<input value="${dev.fullname}">`;
+        const editButtonContainer = document.querySelector(`[id="${dev._id}"] .manager-buttons div:nth-child(2)`);
+        editButtonContainer.after(div);
+        editButtonContainer.remove();
+    }
+
+    saveDev(dev: User) {
+        const inputContainer = document.querySelector(`[id="${dev._id}"] .manager-buttons div:nth-child(2)`);
+        const textarea = inputContainer.firstChild as HTMLInputElement;
+        const devData = this.devs.find(developer => developer._id === dev._id);
+        devData.fullname = textarea.value;
+        this.userService
+            .updateDeveloper(devData)
+            .subscribe();
+        const div = document.createElement('div');
+        div.innerHTML = `<button id="editDevButton" type="sumbit" (click)="editDev(dev)">
+        <img src="../../../../assets/icons/edit_little.png">
+    </button>`;
+        inputContainer.after(div);
+        inputContainer.remove();
+    }
+
     removeDevFromProject(devId: string, projectId: string) {
+        console.log(devId, projectId);
         const devData = this.devs.find(dev => dev._id === devId);
         devData.projects.splice(devData.projects.indexOf(devId), 1);
         const projData = this.projects.find(proj => proj._id === projectId);
@@ -92,9 +124,5 @@ export class DevsListComponent implements OnInit {
             .subscribe(() => {
                 this.devs.splice(this.devs.indexOf(this.devs.find(dev => dev._id === devId)), 1);
             });
-    }
-
-    isProjOfDev(dev: User, projectId: string) {
-        return dev.projectsData.find(devProj => devProj._id === projectId);
     }
 }

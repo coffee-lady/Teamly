@@ -36,9 +36,21 @@
     &:hover {
         opacity: 0.7;
     }
+    &[disabled] {
+        opacity: 0.7;
+    }
 }
 
-.tooltip {
-    color: #ffffff;
-    background: #b40000;
+.box {
+    position: relative;
+}
+
+input.ng-touched.ng-invalid {
+    box-shadow: 0 0 0 1px #b40000;
+}
+
+.invalid-form-alert {
+    position: absolute;
+    padding: 0.2em 0;
+    color: #b40000;
 }

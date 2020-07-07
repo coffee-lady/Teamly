@@ -7,9 +7,15 @@
     <form [formGroup]="userForm" novalidate method="post" (ngSubmit)="register()">
         <div>
             <input type="text" formControlName="email" placeholder="email@example.com">
-            <div *ngIf="email.invalid && (email.dirty || email.touched)">
-                <div class="invalid-form-alert" *ngIf="userForm.controls['email'].hasError('email') && (userForm.controls['email'].dirty || userForm.controls['email'].touched)">
+            <div *ngIf="email.invalid && (userForm.controls['email'].dirty || userForm.controls['email'].touched)">
+                <div class="invalid-form-alert" *ngIf="userForm.controls['email'].hasError('email') && !userForm.controls['email'].hasError('required')">
                     Invalid email
+                </div>
+                <div class="invalid-form-alert" *ngIf="userForm.controls['email'].hasError('required')">
+                    Required field
+                </div>
+                <div class="invalid-form-alert" *ngIf="userForm.controls['email'].hasError('userExists') && !userForm.controls['email'].hasError('email')">
+                    User already exists
                 </div>
             </div>
         </div>
@@ -27,8 +33,13 @@
         </div>
         <div>
             <input type="password" formControlName="password" placeholder="password">
-            <div class="invalid-form-alert" *ngIf="userForm.controls['password'].hasError('required') && (userForm.controls['password'].dirty || userForm.controls['password'].touched)">
-                Required field
+            <div *ngIf="password.invalid && (userForm.controls['password'].dirty || userForm.controls['password'].touched)">
+                <div class="invalid-form-alert" *ngIf="userForm.controls['password'].hasError('required')">
+                    Required field
+                </div>
+                <div class="invalid-form-alert" *ngIf="userForm.controls['password'].hasError('invalidPassword') && !userForm.controls['password'].hasError('required')">
+                    Invalid password
+                </div>
             </div>
         </div>
         <div class="controls">

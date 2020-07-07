@@ -11,7 +11,7 @@ export class TokenStorage {
         localStorage.clear();
     }
 
-    saveToken(token ? : string): void {
+    saveToken(token ?: string): void {
         if (!token) { return; }
         localStorage.setItem(this.tokenKey, token);
     }

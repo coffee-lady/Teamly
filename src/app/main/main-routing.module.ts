@@ -21,6 +21,10 @@ const routes: Routes = [{
             redirectTo: 'developers',
             pathMatch: 'full',
         }, {
+            path: 'projects',
+            component: ProjectOverviewComponent,
+            pathMatch: 'full'
+        }, {
             path: 'projects/:projectId',
             component: ProjectOverviewComponent,
             pathMatch: 'full'

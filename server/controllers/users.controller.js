@@ -2,7 +2,7 @@ const User = require('../models/user.model');
 const Project = require('../models/project.model');
 
 function handleError(err, res) {
-    res.status(err.status).json({
+    res.json({
         message: err.message
     });
     return console.error(err);
@@ -12,20 +12,37 @@ module.exports.getDevelopers = function(req, res) {
     User
         .find({
             role: 'Developer'
-        }, async (err, devs) => {
+        })
+        .exec((err, devs) => {
             if (err) return handleError(err, res);
-            if (!devs) res.status(200).json(null);
+            if (!devs) res.status(400).json(null);
 
-            for (let dev of devs) {
-                delete dev.hashedPassword;
-                dev.projectsData = [];
-                for (let projId of dev.projects) {
-                    let projData = await Project.findById(projId);
-                    dev.projectsData.push(projData);
-                }
-            }
+            let getDevsData = devs.map(dev => new Promise(resolve => {
+                let developer = dev.toObject();
+                delete developer.hashedPassword;
+                developer.projectsData = [];
+                let getProjectsData = developer.projects.map(projectId =>
+                    new Promise(resolve =>
+                        Project.findById(projectId)
+                        .exec((err, project) => {
+                            if (err) return handleError(err, res);
+                            resolve(project);
+                        })))
+                Promise
+                    .all(getProjectsData)
+                    .then(projects => {
+                        developer.projectsData = projects;
+                        resolve(developer);
+                    })
+                    .catch(err => handleError(err, res));
+            }));
 
-            res.status(200).json(devs);
+            Promise
+                .all(getDevsData)
+                .then(devsData => {
+                    res.status(200).json(devsData);
+                })
+                .catch(err => handleError(err, res));
         });
 };
 
@@ -43,7 +60,6 @@ module.exports.findUsers = function(req, res) {
         })
         .exec((err, users) => {
             if (err) return handleError(err, res);
-            if (!users) return res.status(200).json(null);;
 
             res.status(200).json(users);
         });
@@ -60,14 +76,6 @@ module.exports.findUserById = function(req, res) {
         });
 };
 
-module.exports.deleteDeveloper = function(req, res) {
-    User.findByIdAndDelete(req.params.devId, err => {
-        if (err) return handleError(err, res);
-
-        res.status(200).end();
-    });
-};
-
 module.exports.updateDeveloper = function(req, res) {
     let data = req.body;
     delete data._id;
@@ -76,5 +84,69 @@ module.exports.updateDeveloper = function(req, res) {
         .findByIdAndUpdate(req.params.devId, data, (err, dev) => {
             if (err) return handleError(err, res);
             res.status(201).json(dev);
+        });
+};
+
+module.exports.deleteDeveloper = function(req, res) {
+    User.findById(req.params.devId, (err, user) => {
+        if (err) return handleError(err, res);
+
+        const projectsUpdate = user.projects.map(projectId => new Promise(resolve => {
+            Project
+                .findById(projectId)
+                .exec((err, project) => {
+                    if (err) return handleError(err, res);
+
+                    for (let dev in project.developers) {
+                        if (dev._id === user._id) {
+                            project.developers.splice(project.developers.indexOf(dev), 1);
+                            project.save()
+                                .then(resolve())
+                                .catch(err => handleError(err, res));
+                        }
+                    }
+                });
+        }));
+
+        const tasksUpdate = user.currentTasks.map(taskId => new Promise(resolve => {
+            Task
+                .findById(taskId)
+                .exec((err, task) => {
+                    if (err) return handleError(err, res);
+
+                    if (dev._id === task.takenByDev) {
+                        task.takenByDev = '';
+                        task.save()
+                            .then(resolve())
+                            .catch(err => handleError(err, res));
+                    }
+                });
+        }));
+
+        Promise
+            .all([
+                Promise.all(projectsUpdate),
+                Promise.all(tasksUpdate)
+            ])
+            .then(() => new Promise(resolve =>
+                User.findByIdAndDelete(user._id, () => resolve())))
+            .then(() => {
+                res.status(200).end();
+            })
+            .catch(err => handleError(err, res));
+    });
+};
+
+module.exports.checkUserExisting = function(req, res) {
+    let searchStr = req.body.searchString;
+
+    User
+        .findOne({
+            email: searchStr
+        })
+        .exec((err, user) => {
+            if (err) return handleError(err, res);
+
+            res.status(200).json(user);
         });
 };

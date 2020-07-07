@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { Project } from '../../interfaces';
+import { of } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -10,7 +11,7 @@ export class ProjectService {
     constructor(private http: HttpClient) {}
 
     createProject(projectData: Project) {
-        return this.http.post(`/api/new/project`, projectData);
+        return this.http.post(`/api/projects/new`, projectData);
     }
 
     updateProject(projectData: Project, projectId: string) {
@@ -18,7 +19,7 @@ export class ProjectService {
     }
 
     findProject(projectName: string) {
-        return this.http.post('/api/projects/search', projectName);
+        return this.http.post('/api/projects/search', {title: projectName});
     }
 
     findProjectById(id: string) {
@@ -30,6 +31,7 @@ export class ProjectService {
     }
 
     getProjectData(projectId: string) {
+        if (!projectId) { return of({}); }
         return this.http.get(`/api/projects/${projectId}`);
     }
 

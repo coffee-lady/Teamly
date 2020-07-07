@@ -29,3 +29,11 @@ button:hover {
   outline: none;
   background: none;
 }
+textarea {
+  padding: 0.5em;
+  border-radius: 15px;
+}
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 1px #3282B8;
+}

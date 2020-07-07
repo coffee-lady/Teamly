@@ -29,20 +29,42 @@ export class ProjectInfoComponent implements OnInit {
     ngOnInit(): void {
         this.user = this.authService.getUser();
         this.projectService
-            .getProjectData(this.route.snapshot.params.projectId)
+            .getProjectData(this.route.snapshot.paramMap.get('projectId'))
             .subscribe((proj: Project) => {
                 this.project = proj;
+                this.form.controls.title.setValue(proj.title);
+                this.form.controls.description.setValue(proj.description);
             });
     }
 
-    assignManager(event: any): void {
-        this.project.managersData.push(event.data.userToAssign);
-        this.project.managers.push(event.data.userToAssign._id);
+    get title() {
+        return this.form.get('title').value;
     }
 
-    assignDeveloper(event: any): void {
-        this.project.developersData.push(event.data.userToAssign);
-        this.project.developers.push(event.data.userToAssign._id);
+    get description() {
+        return this.form.get('description').value;
+    }
+
+    assignManager(user: User): void {
+        if (this.project.managersData.find(manager => manager._id === user._id)) { return; }
+        this.project.managersData.push(user);
+        this.project.managers.push(user._id);
+    }
+
+    assignDeveloper(user: User): void {
+        if (this.project.developersData.find(dev => dev._id === user._id)) { return; }
+        this.project.developersData.push(user);
+        this.project.developers.push(user._id);
+    }
+
+    changeManagers(data: [User[], string[]]) {
+        this.project.managersData = data[0];
+        this.project.managers = data[1];
+    }
+
+    changeDevelopers(data: [User[], string[]]) {
+        this.project.developersData = data[0];
+        this.project.developers = data[1];
     }
 
     saveProject() {
@@ -51,11 +73,17 @@ export class ProjectInfoComponent implements OnInit {
                 .forEach(controlName => this.form.controls[controlName].markAsTouched());
             return;
         }
+
         delete this.project.developersData;
         delete this.project.managersData;
+        delete this.project.tasksData;
+        this.project.title = this.title;
+        this.project.description = this.description;
+
         this.projectService
             .updateProject(this.project, this.project._id)
             .subscribe(() => {
+                console.log(this.project);
                 this.router.navigateByUrl('/');
             });
     }

@@ -11,11 +11,10 @@ function formatDateString(dateString: string): string {
 
 export function dueDateValidator(control: FormControl): ValidationErrors {
     const value = formatDateString(control.value);
-    const isDateString = /[0-9]{1,2}-[0-9]{1,2}-[0-9]{4}-/.test(value);
-    const isDateValid = formatDateString(new Date(value).toLocaleDateString('en-US')) === value;
+    const isDateString = /[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}/.test(value);
     const isDateInFuture = new Date(value) >= new Date();
 
-    const isDueDateValid = isDateValid && isDateInFuture && isDateString;
+    const isDueDateValid = isDateInFuture && isDateString;
     if (!isDueDateValid) {
         return { invalidDueDate: 'Due date is invalid.' };
     }

@@ -9,12 +9,13 @@ import { DropdownMenuModule } from '../dropdown-menu/dropdown-menu.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'ng2-tooltip-directive';
 import { HttpClientModule } from '@angular/common/http';
-
+import { UserValidator } from '../shared/validators/user-existing.validator';
+import { UsersService } from '../shared/services';
 
 @NgModule({
     declarations: [
         RegisterComponent,
-        LoginComponent
+        LoginComponent,
     ],
     imports: [
         BrowserModule,
@@ -25,6 +26,7 @@ import { HttpClientModule } from '@angular/common/http';
         DropdownMenuModule,
         TooltipModule,
         HttpClientModule,
-    ]
+    ],
+    providers: []
 })
 export class AuthModule {}

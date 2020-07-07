@@ -19,17 +19,16 @@ export class ProjectsSearchComponent implements OnInit {
         fromEvent(document.getElementById('searchInput'), 'input')
             .pipe(
                 debounceTime(600),
-                map(event => (event.target as HTMLInputElement).value),
+                map(() => (document.getElementById('searchInput') as HTMLInputElement).value),
                 filter(value => value.length > 2),
                 distinctUntilChanged(),
                 switchMap(searchStr => {
-                    return this.projectService
-                    .findProject(searchStr)
-                    .pipe(catchError(err => of ([])));
+                    return this.projectService.findProject(searchStr);
                 }))
             .subscribe((projects: Project[]) => {
-                this.projects = projects ? projects : [];
-            });
+                    this.projects = projects;
+                },
+                error => this.projects = null);
     }
 
     linkOnClick(projectId: string) {

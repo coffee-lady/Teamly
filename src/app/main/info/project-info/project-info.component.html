@@ -1,23 +1,23 @@
-<form formGroup="form" class="app-container">
-    <app-project-left-panel [managers]="project.managersData" [developers]="project.developersData"></app-project-left-panel>
+<form [formGroup]="form" class="app-container" *ngIf="project">
     <div class="container">
         <div class="general-inform">
             <div class="head">
                 <div class="title-box">
                     <textarea formControlName="title" class="head__title">{{ project.title }}</textarea>
                 </div>
-                <div class="createdAt">Created: {{ project.createdAt | date : 'short' }}</div>
+                <div class="createdAt">Created: {{ project.createdAt | date : 'shortDate' }}</div>
             </div>
 
             <textarea formControlName="description" class="description">{{ project.description }}</textarea>
         </div>
 
-        <app-assign-input [userRole]="'manager'" [assignUserTo]="'project'" (assignUser)="assignManager($event)"></app-assign-input>
-        <app-assign-input [userRole]="'developer'" [assignUserTo]="'project'" (assignUser)="assignDeveloper($event)"></app-assign-input>
+        <app-assign-input [userRole]="'Manager'" [assignUserTo]="'project'" (assignUser)="assignManager($event)"></app-assign-input>
+        <app-assign-input [userRole]="'Developer'" [assignUserTo]="'project'" (assignUser)="assignDeveloper($event)"></app-assign-input>
 
         <div class="buttons">
             <button class="buttons__delete" (click)="deleteProject()">Delete</button>
             <button class="buttons__save" (click)="saveProject()">Save</button>
         </div>
     </div>
+    <app-project-left-panel [managersData]="project.managersData" [developersData]="project.developersData" [managersIds]="project.managers" [developersIds]="project.developers" (changeDevelopers)="changeDevelopers($event)" (changeManagers)="changeManagers($event)"></app-project-left-panel>
 </form>

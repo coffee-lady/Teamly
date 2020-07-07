@@ -19,6 +19,7 @@ import { NewTaskComponent } from './new/new-task/new-task.component';
 import { UsersListComponent } from './users-list/users-list.component';
 import { AssignInputComponent } from './assign-input/assign-input.component';
 import { ProjectLeftPanelComponent } from './project-left-panel/project-left-panel.component';
+import { UserValidator } from '../shared/validators/user-existing.validator';
 
 @NgModule({
     declarations: [
@@ -45,6 +46,7 @@ import { ProjectLeftPanelComponent } from './project-left-panel/project-left-pan
         DropdownMenuModule,
         TooltipModule,
         HttpClientModule,
-    ]
+    ],
+    providers: []
 })
 export class MainModule {}

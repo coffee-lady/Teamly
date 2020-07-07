@@ -19,15 +19,16 @@ export class DevelopersSearchComponent implements OnInit {
         fromEvent(document.getElementById('searchInput'), 'input')
             .pipe(
                 debounceTime(600),
-                map(event => (event.target as HTMLInputElement).value),
+                map(() => (document.getElementById('searchInput') as HTMLInputElement).value),
                 filter(value => value.length > 2),
                 distinctUntilChanged(),
                 switchMap(searchStr => {
-                    return this.usersService.findUsers(searchStr, 'developer').pipe(catchError(err => of ([])));
+                    return this.usersService.findUsers(searchStr, 'Developer');
                 }))
             .subscribe((developers: User[]) => {
-                this.developers = developers ? developers : [];
-            });
+                    this.developers = developers;
+                },
+                error => this.developers = null);
     }
 
     linkOnClick(devId: string) {

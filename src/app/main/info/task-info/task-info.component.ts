@@ -1,13 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { User, Task, Project } from 'src/app/shared/interfaces';
-import { throwError, Subject, forkJoin } from 'rxjs';
-import { map, mergeMap, takeUntil } from 'rxjs/operators';
+import { Subject, forkJoin } from 'rxjs';
 
 import { dueDateValidator } from 'src/app/shared/validators';
 import { UsersService, TaskService, ProjectService, DateService } from 'src/app/shared/services';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
     selector: 'app-task-info',
@@ -35,27 +34,30 @@ export class TaskInfoComponent implements OnInit, OnDestroy {
     }
 
     set dueDateString(str) {
-        this.task.dueDate = new Date(str);
+        this.dueDateString = str;
     }
 
     get dueDateString() {
-        return this.dateService.formatDateString(this.form.get('dueDate').value);
+        return this.dateService.formatDateString(this.form.get('dueDateString').value);
     }
 
     constructor(private router: Router,
-                private usersService: UsersService,
+                private route: ActivatedRoute,
                 private taskService: TaskService,
                 private projectService: ProjectService,
                 private dateService: DateService) {}
 
     ngOnInit(): void {
-        const taskData = this.taskService.getTaskData();
+        const taskId = this.route.snapshot.params.get('taskId');
+        const taskData = this.taskService.getTaskData(taskId);
         const projectsData = this.projectService.getProjects();
 
         forkJoin([taskData, projectsData]).subscribe((result: any) => {
             const task = result[0];
             this.task = task;
-            this.dueDateString = this.dateService.formatDateToString(task.dueDate);
+            this.form.controls.title.setValue(this.task.title);
+            this.form.controls.description.setValue(this.task.description);
+            this.form.controls.dueDateString.setValue(this.dateService.formatDateToString(this.task.dueDate));
 
             this.projects = result[1];
         });
@@ -65,52 +67,18 @@ export class TaskInfoComponent implements OnInit, OnDestroy {
         this.onDestroy.next();
     }
 
-    private handleError(error: HttpErrorResponse) {
-        if (error.error instanceof ErrorEvent) {
-            console.error('An error occurred:', error.error.message);
-        } else {
-            console.error(
-                `Backend returned code ${error.status}, ` +
-                `body was: ${error.error}`);
-        }
-        return throwError(
-            'Something bad happened; please try again later.');
-    }
-
     chooseProject(event: any) {
         this.task.projectId = event.data.elem._id;
     }
 
-    assignDeveloper(event: any): void {
-        this.task.takenByDev = event.data.userToAssign._id;
-        this.usersService
-            .findUserById(this.task.takenByDev).pipe(
-                map((dev: User) => {
-                    dev.currentTasks.find(taskId => dev.currentTasks.push(taskId));
-                    return dev;
-                }),
-                mergeMap(dev => this.usersService.updateDeveloper(dev)),
-                takeUntil(this.onDestroy)
-            )
-            .subscribe((dev: User) => {
-                this.task.developerData = dev;
-            });
+    assignDeveloper(dev: User): void {
+        this.task.developerData = dev;
+        this.task.takenByDev = dev._id;
     }
 
     removeDeveloper() {
-        this.usersService
-            .findUserById(this.task.takenByDev)
-            .pipe(
-                map((dev: User) => {
-                    for (const taskId of dev.currentTasks) {
-                        dev.currentTasks = (taskId === this.task._id) ?
-                            dev.currentTasks.splice(dev.currentTasks.indexOf(taskId), 1) :
-                            dev.currentTasks;
-                    }
-                    return dev;
-                }),
-                mergeMap(dev => this.usersService.updateDeveloper(dev)))
-            .subscribe();
+        this.task.developerData = null;
+        this.task.takenByDev = null;
     }
 
     saveTask() {
@@ -122,18 +90,7 @@ export class TaskInfoComponent implements OnInit, OnDestroy {
         this.task.title = this.title;
         this.task.description = this.description;
         delete this.task.developerData;
-        if (this.task.takenByDev) {
-            this.usersService
-                .findUserById(this.task.takenByDev).pipe(
-                    map((dev: User) => {
-                        dev.currentTasks.find(taskId => dev.currentTasks.push(taskId));
-                        return dev;
-                    }),
-                    mergeMap(dev => this.usersService.updateDeveloper(dev)),
-                    takeUntil(this.onDestroy)
-                )
-                .subscribe();
-        }
+        this.task.dueDate = new Date(this.dueDateString);
         this.taskService
             .updateTask(this.task, this.task.projectId, this.task._id)
             .subscribe(() => {

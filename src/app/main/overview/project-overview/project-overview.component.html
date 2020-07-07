@@ -1,10 +1,11 @@
 <div class="app-container">
-    <app-projects-search (goToProject)="scrollToProject($event)"></app-projects-search>
-    <div class="container">
+    <app-projects-search (goToProject)="goToProject($event)"></app-projects-search>
+    <div class="no-projects" *ngIf="!project">There are no projects yet.</div>
+    <div class="project-container" *ngIf="project">
         <div class="head">
             <div class="title-box">
                 <div class="head__title">{{ project.title }}</div>
-                <a [routerLink]="'/projects/'+project._id+'/info'" class="title-box__button" *ngIf="user.role==='manager'">
+                <a [routerLink]="'/projects/'+project._id+'/info'" class="title-box__button" *ngIf="user.role==='Manager'">
                     <img src="../../../../assets/icons/edit.png">
                 </a>
             </div>
@@ -15,18 +16,18 @@
 
         <div class="users">
             <div class="users__title">Managers:</div>
-            <ul class="users__list">
+            <ul class="users__list"*ngIf="project.managersData">
                 <li *ngFor="let manager of project.managersData">
-                    {{ manager }};
+                    {{ manager.fullname }};
                 </li>
             </ul>
         </div>
 
         <div class="users">
             <div class="users__title">Developers:</div>
-            <ul class="users__list">
+            <ul class="users__list" *ngIf="project.developersData">
                 <li *ngFor="let dev of project.developersData">
-                    <span>{{ dev }}</span>
+                    <span>{{ dev.fullname }}</span>
                 </li>
             </ul>
         </div>
@@ -38,7 +39,7 @@
                     <th scope="col">Description</th>
                     <th scope="col">Due Date</th>
                     <th scope="col">
-                        <div class="th-button" *ngIf="user.role==='manager'">
+                        <div class="th-button" *ngIf="user.role==='Manager'">
                             <a routerLink="/new/task" class="add-task-button" type="submit">
                                 <img src="../../../../assets/icons/add_black.png">
                             </a>
@@ -63,14 +64,14 @@
                         </div>
                     </td>
                     <td [ngSwitch]="user.role">
-                        <ng-template ngSwitchCase="manager">
+                        <ng-template ngSwitchCase="Manager">
                             <div class="task__buttons_manager">
                                 <button type="submit" (click)="markAsCompleted(task._id)" [disabled]="task.completed"><img src="../../../../assets/icons/checklist.png"></button>
                                 <button type="submit" (click)="editTask(task._id)" [disabled]="task.completed"><img src="../../../../assets/icons/edit_little.png"></button>
                                 <button type="submit" (click)="deleteTask((task._id))"><img src="../../../../assets/icons/delete_black.png"></button>
                             </div>
                         </ng-template>
-                        <ng-template ngSwitchCase="developer">
+                        <ng-template ngSwitchCase="Developer">
                             <button class="task__button_developer" (click)="takeTheTask(task._id)" [disabled]="task.completed || task.takenByDev">Take the task</button>
                         </ng-template>
                     </td>

@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { User } from '../../interfaces';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class UsersService {
     constructor(private http: HttpClient) {}
 
@@ -26,5 +24,9 @@ export class UsersService {
 
     deleteDeveloper(devId: string) {
         return this.http.delete(`/api/users/developers/${devId}`);
+    }
+
+    checkUserExisting(email: string) {
+        return this.http.post('/api/users/checkUserExists', { searchString: email });
     }
 }

@@ -36,6 +36,7 @@
   font-size: 16px;
   color: #ffffff;
   transition: all 0.2s ease-in-out;
+  cursor: pointer;
 }
 .nav__link:hover {
   background: #23374D;

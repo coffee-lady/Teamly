@@ -7,3 +7,6 @@
     grid-template-columns: 8fr 4fr;
   }
 }
+.buttons .buttons__save {
+  margin-left: 1em;
+}

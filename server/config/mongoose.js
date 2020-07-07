@@ -16,7 +16,8 @@ client.connect(err => {
 mongoose.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true
+    useCreateIndex: true,
+    useFindAndModify: false
   })
   .catch(err => console.error(err));
 

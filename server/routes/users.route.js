@@ -7,6 +7,7 @@ router.get('/developers', ctrlUsers.getDevelopers);
 router.post('/search', ctrlUsers.findUsers);
 router.post('/searchById', ctrlUsers.findUserById);
 router.post('/search', ctrlUsers.findUsers);
+router.post('/checkUserExists', ctrlUsers.checkUserExisting);
 router.post('/developers/:devId', ctrlUsers.updateDeveloper);
 router.delete('/developers/:devId', ctrlUsers.deleteDeveloper);
 

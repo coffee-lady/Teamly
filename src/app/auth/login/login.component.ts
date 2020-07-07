@@ -34,12 +34,14 @@ export class LoginComponent {
 
         const { email, password } = this.userForm.getRawValue();
         this.authService.login(email, password).subscribe(response => {
-            if (response.status !== 200) {
-                this.userForm.controls.email.setErrors({ email: true });
-                return;
-            }
+                if (response.status !== 200) {
+                    this.userForm.controls.password.setErrors({ required: true });
+                    return;
+                }
 
-            this.router.navigateByUrl('/');
-        });
+                this.router.navigateByUrl('/');
+            },
+            error => this.userForm.controls.password.setErrors({ invalidPassword: true })
+        );
     }
 }
