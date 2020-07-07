@@ -10,7 +10,7 @@
             <span class="result__title">{{ project.title }}</span>
             <div class="result__createdAt">
                 <img class="createdAt__icon" src="../../../../assets/icons/calendar.png">
-                <span class="createdAt__date">{{ project.createdAt | date:'shortDate' }}</span>
+                <span class="createdAt__date">{{ project.createdAt | date: 'dd/MM/yyyy' }}</span>
             </div>
         </a>
     </div>

@@ -68,6 +68,9 @@
 .dropdown:hover .dropdown-content {
   display: flex;
 }
+.dropdown:focus {
+  outline: none;
+}
 .dropdown-content {
   position: absolute;
   display: none;

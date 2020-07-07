@@ -3,9 +3,9 @@ const router = express.Router();
 
 const taskCtrl = require('../controllers/task.controller');
 
-router.post('/new', taskCtrl.createTask);
-router.get('/:taskId', taskCtrl.getTaskData);
-router.post('/:taskId', taskCtrl.updateTask);
-router.post('/:taskId/delete', taskCtrl.deleteTask);
+router.post('/project-:projectId/new', taskCtrl.createTask);
+router.get('/project-:projectId/task-:taskId', taskCtrl.getTaskData);
+router.post('/project-:projectId/task-:taskId', taskCtrl.updateTask);
+router.delete('/project-:projectId/task-:taskId', taskCtrl.deleteTask);
 
 module.exports = router;

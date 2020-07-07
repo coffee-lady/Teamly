@@ -44,5 +44,6 @@
   transition: all 0.2s ease-in-out;
 }
 .result:hover {
+  color: #FFFFFF;
   background: #3282B8;
 }

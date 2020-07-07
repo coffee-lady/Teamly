@@ -9,14 +9,14 @@
                     <img src="../../../../assets/icons/edit.png">
                 </a>
             </div>
-            <div class="createdAt">Created: {{ project.createdAt | date:'shortDate' }}</div>
+            <div class="createdAt">Created: {{ project.createdAt | date: 'dd/MM/yyyy' }}</div>
         </div>
 
         <div class="description">{{ project.description }}</div>
 
         <div class="users">
             <div class="users__title">Managers:</div>
-            <ul class="users__list"*ngIf="project.managersData">
+            <ul class="users__list" *ngIf="project.managersData">
                 <li *ngFor="let manager of project.managersData">
                     {{ manager.fullname }};
                 </li>
@@ -27,7 +27,7 @@
             <div class="users__title">Developers:</div>
             <ul class="users__list" *ngIf="project.developersData">
                 <li *ngFor="let dev of project.developersData">
-                    <span>{{ dev.fullname }}</span>
+                    {{ dev.fullname }};
                 </li>
             </ul>
         </div>
@@ -59,7 +59,7 @@
                             <img src="../../../../assets/icons/clock.png">
                             <span [ngSwitch]="task.completed">
                                 <ng-template [ngSwitchCase]="true">Completed!</ng-template>
-                                <ng-template [ngSwitchCase]="false">{{ task.dueDate | date:'shortDate' }}</ng-template>
+                                <ng-template [ngSwitchCase]="false">{{ task.dueDate | date: 'dd/MM/yyyy' }}</ng-template>
                             </span>
                         </div>
                     </td>

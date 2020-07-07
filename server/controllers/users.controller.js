@@ -129,7 +129,10 @@ module.exports.deleteDeveloper = function(req, res) {
                 Promise.all(tasksUpdate)
             ])
             .then(() => new Promise(resolve =>
-                User.findByIdAndDelete(user._id, () => resolve())))
+                User.findByIdAndDelete(user._id, err => {
+                    if (err) return handleError(err, res);
+                    resolve();
+                })))
             .then(() => {
                 res.status(200).end();
             })

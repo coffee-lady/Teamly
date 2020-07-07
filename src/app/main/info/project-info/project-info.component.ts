@@ -83,7 +83,6 @@ export class ProjectInfoComponent implements OnInit {
         this.projectService
             .updateProject(this.project, this.project._id)
             .subscribe(() => {
-                console.log(this.project);
                 this.router.navigateByUrl('/');
             });
     }

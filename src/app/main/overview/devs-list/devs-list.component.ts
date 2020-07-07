@@ -18,8 +18,8 @@ export class DevsListComponent implements OnInit {
     editProjects: Project[] = [];
 
     constructor(private authService: AuthService,
-        private userService: UsersService,
-        private projectService: ProjectService) {}
+                private userService: UsersService,
+                private projectService: ProjectService) {}
 
     ngOnInit(): void {
         this.user = this.authService.getUser();
@@ -63,7 +63,7 @@ export class DevsListComponent implements OnInit {
 
     scrollToUser(id: string) {
         const table: HTMLElement = document.querySelector('.table');
-        const devTr: HTMLElement = document.querySelector(`tr[id="${id}"]`);
+        const devTr: HTMLElement = document.querySelector(`[id="${id}"]`);
         table.scrollTop = devTr.offsetTop;
     }
 
@@ -102,20 +102,6 @@ export class DevsListComponent implements OnInit {
     </button>`;
         inputContainer.after(div);
         inputContainer.remove();
-    }
-
-    removeDevFromProject(devId: string, projectId: string) {
-        console.log(devId, projectId);
-        const devData = this.devs.find(dev => dev._id === devId);
-        devData.projects.splice(devData.projects.indexOf(devId), 1);
-        const projData = this.projects.find(proj => proj._id === projectId);
-        projData.developers.splice(projData.developers.indexOf(devId), 1);
-        projData.developersData.splice(projData.developersData.indexOf(devData), 1);
-        devData.projectsData.splice(devData.projectsData.indexOf(projData), 1);
-
-        const updateDev = this.userService.updateDeveloper(devData);
-        const updateProj = this.projectService.updateProject(projData, projData._id);
-        forkJoin([updateDev, updateProj]).subscribe();
     }
 
     deleteDev(devId: string) {

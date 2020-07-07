@@ -3,7 +3,10 @@ import { Task, Project, User } from 'src/app/shared/interfaces';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { dueDateValidator } from 'src/app/shared/validators';
 import { Router } from '@angular/router';
-import { TaskService, ProjectService, DateService } from 'src/app/shared/services';
+import { TaskService, ProjectService } from 'src/app/shared/services';
+import { DatePipe } from '@angular/common';
+
+import * as moment from 'moment';
 
 @Component({
     selector: 'app-new-task',
@@ -24,7 +27,7 @@ export class NewTaskComponent implements OnInit {
     constructor(private router: Router,
                 private taskService: TaskService,
                 private projectService: ProjectService,
-                private dateService: DateService) {}
+                private datePipe: DatePipe) {}
 
     ngOnInit(): void {
         this.task = {
@@ -59,12 +62,12 @@ export class NewTaskComponent implements OnInit {
     }
 
     get dueDateString() {
-        return this.dateService.formatDateString(this.form.get('dueDateString').value);
+        return this.form.get('dueDateString').value.replace(/[.-]/g, '/');
     }
 
-    chooseProject(event: any) {
-        this.form.controls.projectId.setValue(event._id);
-        this.task.projectId = event._id;
+    chooseProject(project: Project) {
+        this.form.controls.projectId.setValue(project._id);
+        this.task.projectId = project._id;
     }
 
     assignDeveloper(dev: User): void {
@@ -85,7 +88,7 @@ export class NewTaskComponent implements OnInit {
         }
         this.task.title = this.title;
         this.task.description = this.description;
-        this.task.dueDate = new Date(this.dueDateString);
+        this.task.dueDate = moment(this.dueDateString, 'DD/MM/YYYY').toDate();
         delete this.task.developerData;
         this.taskService
             .createTask(this.task, this.task.projectId)

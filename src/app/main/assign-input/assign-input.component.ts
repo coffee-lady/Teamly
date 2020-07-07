@@ -37,7 +37,7 @@ export class AssignInputComponent implements OnInit {
             this.usersService
                 .findUsers(this.email, this.userRole)
                 .subscribe((users: User[]) => {
-                        if (users.length > 1) {
+                        if (users.length > 1 || users.length === 0) {
                             this.form.controls.email.setErrors({ invalidEmail: true });
                             return;
                         }

@@ -3,17 +3,17 @@
         <div class="general-inform">
             <div class="head">
                 <div class="title-box">
-                    <textarea class="head__title" formControlName="title">{{ project.title }}</textarea>
+                    <input class="head__title" formControlName="title">
                     <div class="invalid-form-alert" *ngIf="form.controls['title'].hasError('required') && 
                     (form.controls['title'].dirty || form.controls['title'].touched)">
                         Required field
                     </div>
                 </div>
-                <div class="createdAt">Created: {{ project.createdAt | date : 'shortDate' }}</div>
+                <div class="createdAt">Created: {{ project.createdAt | date: 'dd/MM/yyyy' }}</div>
             </div>
 
             <div class="description-box">
-                <textarea class="description" formControlName="description">{{ project.description }}</textarea>
+                <textarea class="description" formControlName="description"></textarea>
                 <div class="invalid-form-alert" *ngIf="form.controls['description'].hasError('required') && 
                 (form.controls['description'].dirty || form.controls['description'].touched)">
                     Required field

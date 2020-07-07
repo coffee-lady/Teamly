@@ -14,7 +14,7 @@ export class DeveloperRequiredGuard implements CanActivate {
 
     canActivate(): boolean {
         this.user = this.authService.getUser();
-        if (this.user.role === 'developer') { return true; }
+        if (this.user.role === 'Developer') { return true; }
 
         this.router.navigateByUrl('/');
         return false;

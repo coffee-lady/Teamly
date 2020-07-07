@@ -2,19 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { User, Task } from 'src/app/shared/interfaces';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { TaskService } from 'src/app/shared/services/tasks/tasks.service';
-import { forkJoin } from 'rxjs';
-import { ThrowStmt } from '@angular/compiler';
 import { UsersService } from 'src/app/shared/services';
-import { mergeMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
     selector: 'app-my-tasks',
     templateUrl: './my-tasks.component.html',
-    styleUrls: ['./my-tasks.component.less']
+    styleUrls: ['./my-tasks.component.less', '../../../shared/styles/table.less']
 })
 export class MyTasksComponent implements OnInit {
     tasks: Task[];
-
     user: User;
 
     constructor(private authService: AuthService, private taskService: TaskService, private userService: UsersService) {}
@@ -24,15 +22,14 @@ export class MyTasksComponent implements OnInit {
         this.taskService
             .getMyTasks(this.user._id)
             .subscribe((tasks: Task[]) => {
-                this.tasks = tasks ? tasks : [];
+                this.tasks = tasks;
             });
     }
 
-    scrollToProject(event: any) {
-        const id = event.data.devId;
-        const devTr = document.querySelector(`tr[[id]="${id}"]`);
-        const yCoord = devTr.getBoundingClientRect().top + pageYOffset;
-        document.documentElement.scrollTo(0, yCoord);
+    scrollToProject(id: string) {
+        const table: HTMLElement = document.querySelector('.table');
+        const devTr: HTMLElement = document.querySelector(`[id="${id}"]`);
+        table.scrollTop = devTr.offsetTop;
     }
 
     markAsCompleted(taskId: string) {
@@ -46,6 +43,9 @@ export class MyTasksComponent implements OnInit {
     removeFromMyTasks(taskId: string) {
         this.user.currentTasks.splice(this.user.currentTasks.indexOf(taskId), 1);
         this.userService.updateDeveloper(this.user).subscribe();
-    }
 
+        const taskData = this.tasks.find(task => task._id === taskId);
+        taskData.takenByDev = null;
+        this.taskService.updateTask(taskData, taskData.projectId, taskData._id);
+    }
 }

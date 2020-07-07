@@ -5,8 +5,10 @@ import { User, Task, Project } from 'src/app/shared/interfaces';
 import { Subject, forkJoin } from 'rxjs';
 
 import { dueDateValidator } from 'src/app/shared/validators';
-import { UsersService, TaskService, ProjectService, DateService } from 'src/app/shared/services';
-import { ThrowStmt } from '@angular/compiler';
+import { TaskService, ProjectService } from 'src/app/shared/services';
+import { DatePipe } from '@angular/common';
+
+import * as moment from 'moment';
 
 @Component({
     selector: 'app-task-info',
@@ -15,6 +17,7 @@ import { ThrowStmt } from '@angular/compiler';
 })
 export class TaskInfoComponent implements OnInit, OnDestroy {
     private readonly onDestroy = new Subject < void > ();
+    private readonly taskId = this.route.snapshot.params.taskId;
 
     task: Task;
     projects: Project[];
@@ -22,7 +25,8 @@ export class TaskInfoComponent implements OnInit, OnDestroy {
     form: FormGroup = new FormGroup({
         title: new FormControl('', Validators.required),
         description: new FormControl('', Validators.required),
-        dueDateString: new FormControl('', [Validators.required, dueDateValidator])
+        dueDateString: new FormControl('', [Validators.required, dueDateValidator]),
+        projectId: new FormControl('', [Validators.required]),
     });
 
     get title() {
@@ -33,23 +37,23 @@ export class TaskInfoComponent implements OnInit, OnDestroy {
         return this.form.get('description').value;
     }
 
-    set dueDateString(str) {
-        this.dueDateString = str;
+    get projectId() {
+        return this.form.get('projectId').value;
     }
 
     get dueDateString() {
-        return this.dateService.formatDateString(this.form.get('dueDateString').value);
+        return this.form.get('dueDateString').value.replace(/[.-]/g, '/');
     }
 
     constructor(private router: Router,
                 private route: ActivatedRoute,
                 private taskService: TaskService,
                 private projectService: ProjectService,
-                private dateService: DateService) {}
+                private datePipe: DatePipe) {}
 
     ngOnInit(): void {
-        const taskId = this.route.snapshot.params.get('taskId');
-        const taskData = this.taskService.getTaskData(taskId);
+        this.form.controls.projectId.setValue(this.route.snapshot.params.projectId);
+        const taskData = this.taskService.getTaskData(this.projectId, this.taskId);
         const projectsData = this.projectService.getProjects();
 
         forkJoin([taskData, projectsData]).subscribe((result: any) => {
@@ -57,7 +61,7 @@ export class TaskInfoComponent implements OnInit, OnDestroy {
             this.task = task;
             this.form.controls.title.setValue(this.task.title);
             this.form.controls.description.setValue(this.task.description);
-            this.form.controls.dueDateString.setValue(this.dateService.formatDateToString(this.task.dueDate));
+            this.form.controls.dueDateString.setValue(this.datePipe.transform(this.task.dueDate, 'dd/MM/yyyy'));
 
             this.projects = result[1];
         });
@@ -67,13 +71,18 @@ export class TaskInfoComponent implements OnInit, OnDestroy {
         this.onDestroy.next();
     }
 
-    chooseProject(event: any) {
-        this.task.projectId = event.data.elem._id;
+    chooseProject(project: Project) {
+        this.form.controls.projectId.setValue(project._id);
     }
 
     assignDeveloper(dev: User): void {
         this.task.developerData = dev;
         this.task.takenByDev = dev._id;
+    }
+
+    removeFromProject() {
+        this.form.controls.projectId.setValue(null);
+        this.task.projectData = null;
     }
 
     removeDeveloper() {
@@ -89,8 +98,9 @@ export class TaskInfoComponent implements OnInit, OnDestroy {
         }
         this.task.title = this.title;
         this.task.description = this.description;
+        this.task.projectId = this.projectId;
         delete this.task.developerData;
-        this.task.dueDate = new Date(this.dueDateString);
+        this.task.dueDate = moment(this.dueDateString, 'DD/MM/YYYY').toDate();
         this.taskService
             .updateTask(this.task, this.task.projectId, this.task._id)
             .subscribe(() => {

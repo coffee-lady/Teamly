@@ -8,8 +8,8 @@ const usersRoutes = require('./users.route');
 const myTasksRoutes = require('./my-tasks.route');
 
 router.use('/auth', authRoutes);
+router.use('/tasks', taskRoutes);
 router.use('/projects', projectRoutes);
-router.use('/projects/:projectId/tasks', taskRoutes);
 router.use('/users', usersRoutes);
 router.use('/my-tasks', myTasksRoutes);
 

@@ -7,7 +7,7 @@ import { debounceTime, map, filter, distinctUntilChanged, switchMap, catchError 
 @Component({
     selector: 'app-projects-search',
     templateUrl: './projects-search.component.html',
-    styleUrls: ['./projects-search.component.less']
+    styleUrls: ['./projects-search.component.less', '../../../shared/styles/search-panel.less']
 })
 export class ProjectsSearchComponent implements OnInit {
     @Output() goToProject: EventEmitter < string > = new EventEmitter();

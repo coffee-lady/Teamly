@@ -5,7 +5,7 @@
                 <div class="title-box">
                     <textarea formControlName="title" class="head__title"></textarea>
                 </div>
-                <div class="createdAt">Created: {{ task.createdAt | date:'shortDate' }}</div>
+                <div class="createdAt">Created: {{ task.createdAt | date: 'dd/MM/yyyy' }}</div>
             </div>
             <textarea formControlName="description" class="description"></textarea>
         </div>

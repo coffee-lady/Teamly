@@ -1,6 +1,7 @@
 const User = require('../models/user.model');
 const Task = require('../models/task.model');
 const Project = require('../models/project.model');
+const { resolve } = require('path');
 
 function handleError(err, res) {
     res.json({
@@ -16,7 +17,10 @@ module.exports.createProject = function(req, res) {
         .create(data)
         .then(project => data.developers.concat(data.managers).map(userId =>
             new Promise(resolve => {
-                User.findByIdAndUpdate(userId, { $push: { projects: project._id } }, () => resolve());
+                User.findByIdAndUpdate(userId, { $push: { projects: project._id } }, err => {
+                    if (err) return handleError(err, res);
+                    resolve();
+                });
             })))
         .then((usersUpdated) => Promise.all(usersUpdated))
         .then(() => {
@@ -52,13 +56,14 @@ module.exports.findProjectById = function(req, res) {
 module.exports.getProjectData = function(req, res) {
     Project
         .findById(req.params.projectId)
-        .exec((err, project) => {
+        .exec((err, projectDoc) => {
             if (err) {
                 handleError(err, res);
                 return;
             };
-            if (!project) return res.status(200).json({});
+            if (!projectDoc) return res.status(200).json({});
 
+            let project = projectDoc.toObject();
             let managersDataPromise = project.managers.map(userId =>
                 new Promise(resolve => User
                     .findById(userId)
@@ -87,30 +92,20 @@ module.exports.getProjectData = function(req, res) {
                     })));
 
             let managersData = Promise.all(managersDataPromise)
-                .then(data => managersData = data)
+                .then(data => project.managersData = data)
                 .catch(err => handleError(err, res));
 
             let developersData = Promise.all(developersDataPromise)
-                .then(data => developersData = data)
+                .then(data => project.developersData = data)
                 .catch(err => handleError(err, res));
 
             let tasksData = Promise.all(tasksDataPromise)
-                .then(data => tasksData = data)
+                .then(data => project.tasksData = data)
                 .catch(err => handleError(err, res));
 
             Promise.all([managersData, developersData, tasksData])
                 .then(() => {
-                    res.status(200).json({
-                        _id: project._id,
-                        title: project.title,
-                        description: project.description,
-                        createdAt: project.createdAt,
-                        managers: project.managers,
-                        developers: project.developers,
-                        managersData: managersData,
-                        developersData: developersData,
-                        tasksData: tasksData
-                    });
+                    res.status(200).json(project);
                 })
                 .catch(err => handleError(err, res));
         });
@@ -120,8 +115,6 @@ module.exports.updateProject = function(req, res) {
     let data = req.body;
     delete data._id;
     const projectId = req.params.projectId;
-
-    console.log(data);
 
     Project.findById(projectId, (err, project) => {
         if (err) return handleError(err, res);
@@ -142,25 +135,26 @@ module.exports.updateProject = function(req, res) {
                         })
                     })
                 })
-            } else { return oldDev };
+            } else resolve();
         });
 
         Promise.all(oldDevsRemove)
             .then(() => {
-                return data.developers.map(newDev => {
+                return data.developers.map(newDev => new Promise(resolve => {
                     if (!project.developers.find(oldDev => oldDev === newDev)) {
-                        return new Promise(resolve => {
-                            User.findByIdAndUpdate(newDev, { projects: { $push: projectId } }, () => resolve());
-                        })
-                    } else { return newDev }
-                })
+                        User.findByIdAndUpdate(newDev, { $push: { projects: projectId } }, err => {
+                            if (err) return handleError(err, res);
+                            resolve();
+                        });
+                    } else resolve();
+                }));
             })
             .then(newDevsUpdate => Promise.all(newDevsUpdate))
             .then(() => {
                 for (let key of Object.keys(data)) {
                     project[key] = data[key];
                 }
-                project.save()
+                return project.save()
             })
             .then(() => {
                 res.status(200).end()
@@ -171,10 +165,55 @@ module.exports.updateProject = function(req, res) {
 };
 
 module.exports.deleteProject = function(req, res) {
-    Project.findByIdAndDelete(req.params.projectId, err => {
-        if (err) return handleError(err, res);
 
-        res.status(200).end();
+    Project.findById(req.params.projectId, (err, project) => {
+        if (err) handleError(err, res);
+
+        const updateUsers = project.developers
+            .concat(project.managers)
+            .map(userId => new Promise(resolve => {
+                User.findById(userId, (err, user) => {
+                    if (err) handleError(err, res);
+
+                    for (let projId of user.projects) {
+                        if (projId === projectId) {
+                            user.projects.splice(user.projects.indexOf(projId), 1);
+                        }
+                    }
+                    user.save()
+                        .then(() => resolve())
+                        .catch(err => handleError(err, res));
+                });
+            }));
+
+        const updateTasks = project.tasks.map(taskId => new Promise(resolve => {
+            Task.findById(taskId, (err, task) => {
+                task.projectId = null;
+                task.save()
+                    .then(() => resolve())
+                    .catch(err => handleError(err, res));
+            });
+        }));
+
+        Promise.all([
+                new Promise(resolve => {
+                    Promise.all(updateUsers)
+                        .then(() => resolve())
+                        .catch(err => handleError(err, res));
+                }),
+                new Promise(resolve => {
+                    Promise.all(updateTasks)
+                        .then(() => resolve())
+                        .catch(err => handleError(err, res));
+                }),
+                Task.deleteOne({ _id: task._id }, (err => {
+                    if (err) return handleError(err, res)
+                }))
+            ])
+            .then(() => {
+                res.status(200).end();
+            })
+            .catch(err => handleError(err, res));
     });
 };
 

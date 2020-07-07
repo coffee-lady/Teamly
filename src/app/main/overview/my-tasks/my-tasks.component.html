@@ -1,6 +1,6 @@
 <div class="app-container">
     <app-projects-search (goToProject)="scrollToProject($event)"></app-projects-search>
-    <div class="container">
+    <div class="table-container">
         <table class="table">
             <thead>
                 <tr>
@@ -11,17 +11,17 @@
                 </tr>
             </thead>
             <tbody>
-                <div class="no-devs" *ngIf="!tasks">
+                <div class="no-tasks" *ngIf="!tasks">
                     No available tasks found.
                 </div>
                 <tr *ngFor="let task of tasks">
-                    <td class="task__title">{{ task.projectData.title }}</td>
+                    <td class="task__title" [id]="task.projectId">{{ task.projectData.title }}</td>
                     <td class="task__title">{{ task.title }}</td>
                     <td class="task__description">{{ task.description }}</td>
                     <td>
                         <div class="task__dueDate">
                             <img src="../../../../assets/icons/clock.png">
-                            <span>{{ task.dueDate | date:'shortDate' }}</span>
+                            <span>{{ task.dueDate | date: 'dd/MM/yyyy' }}</span>
                         </div>
                     </td>
                     <td>

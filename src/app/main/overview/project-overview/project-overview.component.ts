@@ -17,11 +17,11 @@ export class ProjectOverviewComponent implements OnInit {
     lastProjectId: string;
 
     constructor(private route: ActivatedRoute,
-                private router: Router,
-                private userService: UsersService,
-                private projectService: ProjectService,
-                private taskService: TaskService,
-                private authService: AuthService) {}
+        private router: Router,
+        private userService: UsersService,
+        private projectService: ProjectService,
+        private taskService: TaskService,
+        private authService: AuthService) {}
 
     ngOnInit(): void {
         this.user = this.authService.getUser();
@@ -59,6 +59,13 @@ export class ProjectOverviewComponent implements OnInit {
                         task.takenByDev;
                 }
             });
+
+        const taskData = this.project.tasksData.find(task => {
+            task.takenByDev = (task._id === taskId) ? this.user._id : task.takenByDev;
+            if (task._id === taskId) { return true; } else { return false; }
+        });
+
+        this.taskService.updateTask(taskData, this.projectId, taskData._id).subscribe();
     }
 
     markAsCompleted(taskId: string) {
@@ -76,5 +83,4 @@ export class ProjectOverviewComponent implements OnInit {
     deleteTask(taskId: string) {
         this.taskService.deleteTask(this.projectId, taskId).subscribe();
     }
-
 }

@@ -1,6 +1,7 @@
 const User = require('../models/user.model');
 const Task = require('../models/task.model');
 const Project = require('../models/project.model');
+const { resolve } = require('path');
 
 function handleError(err, res) {
     res.json({
@@ -22,21 +23,22 @@ module.exports.createTask = function(req, res) {
                             tasks: task._id
                         }
                     }, err => {
-                        if (err) handleError(err, res);
+                        if (err) { return handleError(err, res); }
                         resolve();
                     });
                 }),
                 new Promise(resolve => {
                     if (data.takenByDev) {
                         User.findByIdAndUpdate(data.takenByDev, { $push: { currentTasks: task._id } }, err => {
-                            if (err) handleError(err, res);
+                            if (err) { return handleError(err, res); }
+                            resolve();
                         });
-                    } else resolve({});
+                    } else resolve();
                 })
-            ])
+            ]);
         })
         .then(() => {
-            res.status(200);
+            res.status(200).end();
         })
         .catch(err => handleError(err, res));
 };
@@ -44,14 +46,15 @@ module.exports.createTask = function(req, res) {
 module.exports.getTaskData = function(req, res) {
     Task
         .findById(req.params.taskId)
-        .exec((err, task) => {
+        .exec((err, taskDoc) => {
             if (err) handleError(err, res);
+            task = taskDoc.toObject();
 
             Promise.all([
                     new Promise(resolve => {
                         Project
                             .findById(req.params.projectId)
-                            .exec(async (err, project) => {
+                            .exec((err, project) => {
                                 if (err) return handleError(err, res);
                                 resolve(project)
                             });
@@ -70,6 +73,7 @@ module.exports.getTaskData = function(req, res) {
                 .then(results => {
                     task.projectData = results[0];
                     task.developerData = results[1];
+
                     res.status(200).json(task);
                 })
                 .catch(err => handleError(err, res));
@@ -79,14 +83,15 @@ module.exports.getTaskData = function(req, res) {
 module.exports.updateTask = function(req, res) {
     let data = req.body;
     delete data._id;
+
     Task
         .findById(req.params.taskId, (err, task) => {
             if (err) handleError(err, res);
 
             const updateOldDev = new Promise(resolve => {
-                if ((data.takenByDev && task.takenByDev !== data.takenByDev) || (!data.takenByDev && task.takenByDev)) {
+                if (task.takenByDev && task.takenByDev !== data.takenByDev) {
                     User
-                        .findById(task.takenByDev)
+                        .findById(data.takenByDev)
                         .exec((err, dev) => {
                             if (err) handleError(err, res);
 
@@ -94,15 +99,16 @@ module.exports.updateTask = function(req, res) {
                                 if (taskId === task.takenByDev) {
                                     dev.currentTasks.splice(dev.currentTasks.indexOf(taskId), 1);
                                     dev.save()
-                                        .then(() => resolve());
+                                        .then(() => resolve())
+                                        .catch(err => handleError(err, res));
                                 }
                             }
                         })
                 } else resolve()
             });
 
-            updateOldDev.then(() => {
-                    if (data.takenByDev) {
+            updateOldDev.then(() => new Promise(resolve => {
+                    if (data.takenByDev && data.takenByDev !== task.takenByDev) {
                         User
                             .findById(data.takenByDev)
                             .exec((err, dev) => {
@@ -117,16 +123,15 @@ module.exports.updateTask = function(req, res) {
                                     .catch(err => handleError(err, res));
                             })
                     } else resolve();
-                })
+                }))
                 .then(() => {
                     for (let key of Object.keys(data)) {
                         task[key] = data[key];
                     }
-                    task.save();
-
+                    return task.save()
                 })
                 .then(() => {
-                    res.status(200).json(task);
+                    res.status(200).end();
                 })
                 .catch(err => handleError(err, res));
         });
@@ -143,9 +148,12 @@ module.exports.deleteTask = function(req, res) {
                             .findById(task.takenByDev, (err, dev) => {
                                 if (err) handleError(err, res);
 
-                                dev.currentTasks.find((taskId, index) => {
-                                    dev.currentTasks = taskId === this.task._id ? dev.currentTasks.splice(index, 1) : dev.currentTasks;
-                                });
+                                for (let taskId of dev.currentTasks) {
+                                    dev.currentTasks =
+                                        taskId === req.params.taskId ?
+                                        dev.currentTasks.splice(dev.currentTasks.indexOf(taskId), 1) :
+                                        dev.currentTasks;
+                                }
                                 dev.save(err => {
                                     if (err) return handleError(err, res);
                                     resolve();
@@ -158,9 +166,12 @@ module.exports.deleteTask = function(req, res) {
                         .findById(task.projectId, (err, project) => {
                             if (err) handleError(err, res);
 
-                            project.tasks.find((taskId, index) => {
-                                project.tasks = taskId === this.task._id ? project.tasks.splice(index, 1) : project.tasks;
-                            });
+                            for (let taskId of project.tasks) {
+                                project.tasks =
+                                    taskId === req.params.taskId ?
+                                    project.tasks.splice(project.tasks.indexOf(taskId), 1) :
+                                    project.tasks;
+                            }
                             project.save(err => {
                                 if (err) return handleError(err, res);
                                 resolve();
@@ -168,7 +179,8 @@ module.exports.deleteTask = function(req, res) {
                         });
                 }),
                 Task.deleteOne({ _id: task._id }, (err => {
-                    if (err) return handleError(err, res)
+                    if (err) return handleError(err, res);
+                    resolve();
                 }))
             ])
             .then(() => {
@@ -181,20 +193,32 @@ module.exports.deleteTask = function(req, res) {
 module.exports.getMyTasks = function(req, res) {
     User
         .findById(req.query.id)
-        .exec(async (err, user) => {
+        .exec((err, user) => {
             if (err) return handleError(err, res);
-            if (!user.currentTasks) return res.status(200).json(null);
+            if (!user.currentTasks) return res.status(200).json([]);
 
-            let tasksDataPromise = user.currentTasks.map(taskId =>
-                new Promise(resolve => Task
+            let tasksDataPromise = user.currentTasks.map(taskId => new Promise(resolve => {
+                console.log(taskId);
+                
+                Task
                     .findById(taskId)
-                    .exec((err, task) => {
+                    .exec((err, taskDoc) => {
                         if (err) return handleError(err, res);
-                        resolve(task);
-                    })));
+                        let task = taskDoc.toObject();
+
+                        Project.findById(task.projectId)
+                            .exec((err, project) => {
+                                if (err) return handleError(err, res);
+                                task.projectData = project;
+                                resolve(task);
+                            });
+                    })
+            }));
 
             Promise.all(tasksDataPromise)
-                .then(data => res.status(200).json(data))
+                .then(data => {
+                    res.status(200).json(data)
+                })
                 .catch(err => handleError(err, res));
         });
 };

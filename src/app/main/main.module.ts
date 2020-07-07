@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MainComponent } from './main.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { ProjectsSearchComponent } from './overview/projects-search/projects-search.component';
@@ -19,7 +19,6 @@ import { NewTaskComponent } from './new/new-task/new-task.component';
 import { UsersListComponent } from './users-list/users-list.component';
 import { AssignInputComponent } from './assign-input/assign-input.component';
 import { ProjectLeftPanelComponent } from './project-left-panel/project-left-panel.component';
-import { UserValidator } from '../shared/validators/user-existing.validator';
 
 @NgModule({
     declarations: [
@@ -36,7 +35,7 @@ import { UserValidator } from '../shared/validators/user-existing.validator';
         ProjectOverviewComponent,
         ProjectLeftPanelComponent,
         NewProjectComponent,
-        NewTaskComponent,
+        NewTaskComponent
     ],
     imports: [
         CommonModule,
@@ -47,6 +46,8 @@ import { UserValidator } from '../shared/validators/user-existing.validator';
         TooltipModule,
         HttpClientModule,
     ],
-    providers: []
+    providers: [
+        DatePipe
+    ]
 })
 export class MainModule {}
